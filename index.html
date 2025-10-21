@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>EIF Leaderboard</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
   :root{
     /* Original Gradient Colors */
@@ -12,16 +12,16 @@
     --bg2: #ffd24d; /* Golden Yellow */
     
     /* New Aesthetic Enhancements */
-    --accent: #111; 
-    --table-bg: #fff; 
+    --accent: #1e1e1e; /* Darker text for contrast */
     --table-shadow: rgba(0,0,0,0.15);
-    --update-glow: rgba(0, 150, 0, 0.2);
+    --update-glow: #e6ffec; /* Light green background for flash */
+    --moving-color: #008000; /* Darker green for moving row text/border */
     
     /* Podium Colors */
-    --gold: #FFD700;
-    --silver: #C0C0C0;
-    --bronze: #CD7F32;
-    --pod-bg: rgba(255, 255, 255, 0.95); /* Nearly white background for structure */
+    --gold: #FFC72C; /* Brighter Gold */
+    --silver: #A9B3B9; /* Cleaner Silver */
+    --bronze: #8B4513; /* Earthy Bronze */
+    --pod-bg: #ffffff; /* Clean White for Podium Cards */
   }
   html,body{height:100%;margin:0;}
   body{
@@ -29,39 +29,39 @@
     display:flex;
     flex-direction:column;
     align-items:center;
-    gap:20px;
+    gap:30px; /* Increased gap from 20px */
     font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
     color:white; 
-    padding:28px;
+    padding:30px 20px;
     background: linear-gradient(135deg, var(--bg1) 0%, var(--bg2) 60%);
     background-attachment: fixed;
   }
   
-  /* --- AESTHETIC HEADING --- */
+  /* --- REVAMPED HEADING (BIGGER) --- */
   h1{
     margin:0;
-    font-size:2.8rem; /* Larger font */
-    font-weight: 900; /* Bolder font */
+    font-size: 4.5rem; /* Significantly increased font size */
+    font-weight: 900; 
     letter-spacing:3px;
     text-transform:uppercase;
     display:flex;
     align-items:center;
     gap:12px;
     color: #fff; 
-    text-shadow: 
-        0 4px 6px rgba(0,0,0,0.3), /* Deeper shadow for pop */
-        0 0 10px rgba(255,255,255,0.4); /* Subtle white glow */
+    text-shadow: 0 6px 12px rgba(0,0,0,0.5); /* Deeper, cleaner shadow */
+    line-height: 1;
   }
   
-  /* --- AESTHETIC PODIUM WRAPPER AND INDIVIDUAL PODS --- */
+  /* --- REVAMPED PODIUM STYLING --- */
   .podium-wrap{
-    width:90%;
+    width:95%;
     max-width:1000px;
     display:flex;
     justify-content:center;
     align-items:flex-end;
     gap:18px;
     padding:10px;
+    margin-bottom: 20px;
   }
   .podium{
     display:flex;
@@ -70,124 +70,159 @@
     width:100%;
     justify-content:center;
     max-width:900px;
-    margin-bottom:6px;
   }
   .pod{
-    width:180px;
-    min-height:110px;
-    border-radius:12px;
-    /* Smoother, slightly 'neomorphic' light background */
+    width: 180px;
+    min-height: 120px;
+    border-radius:16px;
     background: var(--pod-bg); 
     color: var(--accent);
-    box-shadow: 
-        0 10px 20px rgba(0,0,0,0.2), /* Soft general shadow */
-        0 0 0 1px rgba(0,0,0,0.05) inset; /* Subtle inner border for depth */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
     display:flex;
     flex-direction:column;
     align-items:center;
     justify-content:flex-end;
-    padding:16px 12px; /* Increased vertical padding */
+    padding: 24px 16px 16px; /* Increased padding and space for badge */
     position:relative;
     transform-origin: bottom center;
     transition: transform 300ms ease;
+    border: 3px solid transparent;
+  }
+
+  /* Specific Pod Tiers - Define height/scale for visual hierarchy */
+  .pod.first{ transform: translateY(-16px) scale(1.05); } 
+  .pod.second{ transform: translateY(0) scale(1.0); } 
+  .pod.third{ transform: translateY(8px) scale(0.95); } 
+  
+  /* The Floating Rank Badge */
+  .pod .place{
+    position: absolute;
+    top: -20px; /* Position above the card */
+    left: 50%;
+    transform: translateX(-50%);
+    font-weight: 900; 
+    font-size: 2.2rem; /* Bigger rank badge */
+    line-height: 1.2;
+    padding: 6px 14px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    border: 3px solid;
+    z-index: 20;
   }
   
-  .pod .place{
-    font-weight:900; /* Super bold rank text */
-    font-size:1.6rem; 
-    margin-bottom:8px;
-    line-height:1;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
+  /* Badge Colors */
+  .pod.first .place { background: var(--gold); color: #333; border-color: #fff; }
+  .pod.second .place { background: var(--silver); color: #333; border-color: #fff; }
+  .pod.third .place { background: var(--bronze); color: white; border-color: #fff; }
+
+  /* Ensure Full Name Display (allows wrapping, prevents ellipsis) */
   .pod .name{
-    font-weight:700; /* Bolder name */
-    font-size:1.2rem; /* Slightly larger name */
-    white-space:nowrap;
-    text-overflow:ellipsis;
-    overflow:hidden;
+    font-weight: 800; 
+    font-size: 1.1rem; 
+    white-space: normal; /* Allows wrapping */
+    text-overflow: clip; 
+    overflow: visible;
     width:100%;
     text-align:center;
     color: var(--accent);
+    margin-top: 8px;
+    line-height: 1.2;
   }
-  .pod .points{
-    font-size:1.1rem; /* Slightly larger points */
-    margin-top:8px;
-    background: rgba(0,0,0,0.1);
-    padding:6px 10px;
-    border-radius:10px; /* More rounded points badge */
-    font-weight:800; /* Extra bold points */
-    color: var(--accent);
-  }
-  /* Specific Pod Heights and Borders (Aesthetic Medals) */
-  .pod.first{ height:180px; transform: translateY(-10px) scale(1.04); border: 4px solid var(--gold); box-shadow: 0 0 25px var(--gold); } 
-  .pod.second{ height:150px; transform: translateY(0) scale(1.00); border: 3px solid var(--silver); box-shadow: 0 0 15px var(--silver); } 
-  .pod.third{ height:130px; transform: translateY(6px) scale(.98); border: 3px solid var(--bronze); box-shadow: 0 0 10px var(--bronze); } 
   
-  /* --- TABLE STYLING (Kept from previous version, just ensuring no conflict) --- */
+  /* Points: Lighter weight and no background block */
+  .pod .points{
+    font-size:1.1rem; 
+    margin-top: 10px;
+    padding: 0;
+    background: transparent;
+    font-weight: 600; /* Medium weight */
+    color: #444; 
+  }
+  
+  /* --- TABLE STYLING: INCREASED GAP (same as last request) --- */
   .table-wrap{
-    width: 90%;
+    width: 95%;
     max-width: 1000px;
-    background: var(--table-bg); 
+    background: transparent; 
     border-radius:14px;
-    padding:10px;
-    box-shadow: 0 10px 30px var(--table-shadow);
+    padding:0 10px 10px; 
+    box-shadow: 0 15px 40px var(--table-shadow); 
+    overflow-x: auto;
   }
   table{
     width:100%;
     border-collapse: separate; 
-    border-spacing: 0 8px;    
+    border-spacing: 0 14px;    /* Increased vertical space to 14px */
     overflow: hidden;
     color:var(--accent); 
-    table-layout:auto;
+    table-layout: auto; 
+    padding-top: 50px; 
+  }
+  thead{
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: #fcfcfc; 
+    border-radius: 14px 14px 0 0;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.1);
   }
   thead th{
-    background: rgba(0,0,0,0.05); 
-    padding:12px 10px;
+    padding:15px 10px;
     text-transform:uppercase;
     font-size:0.85rem;
-    letter-spacing:1px;
+    letter-spacing:1.5px;
     text-align:center;
-    border-bottom:1px solid rgba(0,0,0,0.1);
+    background: linear-gradient(to bottom, #f5f5f5, #e0e0e0);
+    border-bottom:3px solid var(--bg1);
+    color: #444;
   }
   tbody tr{
     border-radius: 8px; 
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05); 
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
     background-color: white; 
-    transition: transform 500ms cubic-bezier(.2,.8,.2,1), background-color 220ms ease;
+    transition: transform 500ms cubic-bezier(.2,.8,.2,1), background-color 220ms ease, box-shadow 500ms ease;
     will-change: transform;
-    position: relative; /* Needed for z-index on moving */
+    position: relative; 
+    font-weight: 500;
   }
   tbody td{
-    padding:12px 10px;
+    padding:14px 10px;
     text-align:center;
     border-bottom: none; 
-    font-size:0.95rem;
+    font-size:1rem;
     vertical-align:middle;
+    font-weight: 500;
   }
+  /* Round the corners of the individual rows */
   tbody td:first-child { border-top-left-radius: 8px; border-bottom-left-radius: 8px; }
   tbody td:last-child { border-top-right-radius: 8px; border-bottom-right-radius: 8px; }
 
-  /* Animation Classes */
-  tbody tr.updated-cell, tbody tr.moving {
+  /* Green flash for any change (data or rank) */
+  tbody tr.updated-cell {
     background-color: var(--update-glow) !important; 
   }
-  
-  .moving {
-    box-shadow: 0 8px 24px var(--table-shadow);
-    z-index: 1; 
+
+  /* Movement and high Z-index for rank changes (sliding row) */
+  tbody tr.moving {
+    box-shadow: 0 12px 30px rgba(0, 150, 0, 0.4);
+    background-color: #8cffb3 !important; /* Bright green while moving */
+    color: var(--moving-color);
+    font-weight: 700; 
+    z-index: 5; 
+    border: 1px solid var(--moving-color);
   }
+
   @media (max-width:760px){
-    h1{font-size:1.8rem;}
-    .pod{ width:120px; min-height:90px; }
-    .pod.first{height:140px;}
-    .pod.second{height:120px;}
-    .pod.third{height:110px;}
-    .pod .place { font-size: 1.1rem; }
-    .pod .name { font-size: 0.9rem; }
+    h1{font-size:2.5rem; letter-spacing:1px;}
+    .pod{ width:100px; min-height:100px; padding: 18px 10px 10px; }
+    .pod.first, .pod.second, .pod.third { transform: none; }
+    .pod .place { font-size: 1.5rem; top: -15px; }
+    .pod .name { font-size: 0.8rem; }
+    .pod .points { font-size: 0.9rem; }
+    tbody td { font-size: 0.85rem; padding: 10px 5px;}
+    thead th { font-size: 0.75rem; padding: 10px 5px;}
   }
-  .muted{opacity:0.9;font-weight:600;font-size:0.9rem;}
+  .muted{opacity:0.9;font-weight:500;font-size:0.9rem;}
 </style>
 </head>
 <body>
@@ -195,8 +230,11 @@
 
 <div class="podium-wrap">
   <div class="podium" id="podium">
+    <!-- 2nd Place -->
     <div class="pod second" data-place="2"><div class="place">2nd 🥈</div><div class="name muted">—</div><div class="points">0 pts</div></div>
+    <!-- 1st Place -->
     <div class="pod first" data-place="1"><div class="place">1st 🥇</div><div class="name muted">—</div><div class="points">0 pts</div></div>
+    <!-- 3rd Place -->
     <div class="pod third" data-place="3"><div class="place">3rd 🥉</div><div class="name muted">—</div><div class="points">0 pts</div></div>
   </div>
 </div>
@@ -212,13 +250,16 @@
 // IMPORTANT: Use your correct public Google Sheet URL here
 const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTQi-z2SLLIg21-uohF1NG58lzZZuPZ6V_wGuQ_g-PTmjvRHcUR3e6PPg4K80i7_Qia_YZkDIJS2eCL/pub?gid=0&single=true&output=csv";
 
-const tableHead = document.querySelector("#leaderboard a thead");
+const tableHead = document.querySelector("#leaderboard thead");
 const tableBody = document.querySelector("#leaderboard tbody");
 const podium = document.getElementById("podium");
 let previousRowsMap = new Map();
 let previousOrder = [];
-const POLL_MS = 20000; 
+const POLL_MS = 20000; // Poll every 20 seconds for real-time updates
 
+/**
+ * Parses CSV text data into an array of arrays (rows and columns).
+ */
 function parseCSV(text){
   const rows = [];
   let cur="", row=[], inQuotes=false;
@@ -236,13 +277,18 @@ function parseCSV(text){
   return rows.filter(r=>r.length>0 && r.some(c=>c!==""));
 }
 
+/**
+ * Attempts to automatically identify the column containing the scores/points.
+ */
 function detectPointsColumn(headers, rows){
   const normalized = headers.map(h=>(h||"").toLowerCase().replace(/[^a-z0-9]/g, ''));
   const candidates = ['total','points','score','pts'];
+  // 1. Check for header keywords
   for(let c of candidates){
     const idx = normalized.indexOf(c);
     if(idx!==-1) return idx;
   }
+  // 2. Fallback: Check for the last column that looks like numbers
   if(rows.length > 0) {
     for (let i = headers.length - 1; i >= 0; i--) {
         let numberCount = 0;
@@ -258,13 +304,20 @@ function detectPointsColumn(headers, rows){
   return headers.length > 0 ? headers.length - 1 : 0;
 }
 
+/**
+ * Fetches the CSV data from the Google Sheet URL.
+ */
 async function fetchSheetCSV(){
+  // Add a cache-buster to the URL to ensure fresh data
   const url=SHEET_URL+(SHEET_URL.includes('?')?'&':'?')+'_='+Date.now();
   const resp=await fetch(url,{cache:"no-store"});
   if(!resp.ok) throw new Error("Failed to fetch sheet: "+resp.status);
   return parseCSV(await resp.text());
 }
 
+/**
+ * Builds the table header row.
+ */
 function buildHeader(headers, ptsIdx){
   const tr=document.createElement('tr');
   const rankTh=document.createElement('th'); rankTh.textContent='Rank'; tr.appendChild(rankTh);
@@ -287,17 +340,23 @@ function buildHeader(headers, ptsIdx){
   tableHead.appendChild(tr);
 }
 
+/**
+ * Generates a unique key for a player/row based on its content for tracking changes.
+ */
 function playerKeyFromRow(headers, row, nameIdx, ptsIdx){
   const normalized = headers.map(h=>(h||"").toLowerCase().replace(/[^a-z0-9]/g, ''));
   const candidates = ['id','player','name','team'];
   
+  // Try to find a specific key column first
   for(let c of candidates){
     const idx=normalized.indexOf(c); 
     if(idx!==-1 && row[idx]) return row[idx];
   }
   
+  // Fallback to the determined name column
   if(nameIdx !== -1 && row[nameIdx] && nameIdx !== ptsIdx) return row[nameIdx];
   
+  // Last fallback: Use the very first non-empty cell that isn't the points column
   for(let i = 0; i < row.length; i++) {
       if (i !== ptsIdx && row[i] && row[i].trim() !== '') {
           return row[i];
@@ -307,6 +366,10 @@ function playerKeyFromRow(headers, row, nameIdx, ptsIdx){
   return JSON.stringify(row);
 }
 
+/**
+ * Compares old and new row positions and animates the reordering.
+ * Animation is strictly tied to rank change AND position change (dy !== 0).
+ */
 function animateReorderAndRender(newOrderedRows, nameIdx, ptsIdx, originalHeaders){
   const oldElements={};
   Array.from(tableBody.children).forEach(tr=>{ const key=tr.dataset.key; if(key) oldElements[key]=tr; });
@@ -318,19 +381,23 @@ function animateReorderAndRender(newOrderedRows, nameIdx, ptsIdx, originalHeader
     const {key,rowData}=item;
     let tr=oldElements[key];
     
+    // 1. Create/Re-use Row Element
     if(!tr){ 
       tr=document.createElement('tr'); 
       tr.dataset.key=key; 
+      tr.classList.add('updated-cell');
     } else { 
       tr.classList.remove('updated-cell', 'moving'); 
     }
     
     tr.innerHTML="";
     
+    // A. Add Rank
     const rankTd=document.createElement('td'); 
     rankTd.textContent=item.rank; 
     tr.appendChild(rankTd);
     
+    // B. Add Data Columns (excluding points, rank/no columns)
     const dataCells = [];
     rowData.forEach((cellVal, i) => {
       if (i !== ptsIdx) {
@@ -344,25 +411,23 @@ function animateReorderAndRender(newOrderedRows, nameIdx, ptsIdx, originalHeader
     });
     dataCells.forEach(td => tr.appendChild(td));
     
+    // C. Add Points (last column)
     const ptsTd = document.createElement('td');
     ptsTd.textContent = rowData[ptsIdx] || '0';
     tr.appendChild(ptsTd);
 
-
-    const prevRow=previousRowsMap.get(key)||[];
-    if(prevRow.length){
-      let changed=false;
-      const prevRank=previousOrder.indexOf(key)+1;
-      if(prevRank!==item.rank && item.rank>0 && prevRank>0){ changed=true; }
-      
-      for(let i=0;i<rowData.length;i++){
-        const prevVal=prevRow[i]||"", curVal=rowData[i]||"";
-        if(prevVal!==curVal){ 
-          changed=true; 
-          break;
+    // D. Check for Data Updates (score or any cell content change)
+    const prevRowData = previousRowsMap.get(key)||[];
+    if(prevRowData.length){
+        let dataChanged = false;
+        for(let i=0;i<rowData.length;i++){
+            const prevVal = prevRowData[i] || "", curVal = rowData[i] || "";
+            if(prevVal !== curVal){ 
+                dataChanged = true; 
+                break;
+            }
         }
-      }
-      if(changed) tr.classList.add('updated-cell');
+        if(dataChanged) tr.classList.add('updated-cell');
     }
     
     frag.appendChild(tr);
@@ -370,54 +435,70 @@ function animateReorderAndRender(newOrderedRows, nameIdx, ptsIdx, originalHeader
   
   tableBody.innerHTML=""; tableBody.appendChild(frag);
   
+  // E. Calculate Position Changes and Run Animation
   const newRects={};
   Array.from(tableBody.children).forEach(tr=>{ 
     const key=tr.dataset.key; 
     newRects[key]=tr.getBoundingClientRect(); 
-    if (tr.classList.contains('updated-cell')) {
-         tr.classList.add('moving');
-    }
   });
 
   Object.entries(newRects).forEach(([k,newRect])=>{
     const el=tableBody.querySelector(`tr[data-key='${CSS.escape(k)}']`);
     const oldRect=oldRects[k];
-    if(oldRect){
-      const dy=oldRect.top-newRect.top;
-      if(dy!==0){
+    if(!el) return;
+
+    // Determine if position changed (if old position exists)
+    const dy = oldRect ? oldRect.top - newRect.top : 0;
+    
+    // Check if rank actually changed (using previousOrder, which stores ranks by key)
+    const prevRank = previousOrder.indexOf(k) + 1;
+    const currentRank = parseInt(el.querySelector('td:first-child').textContent) || 0;
+    
+    // Animate ONLY if position changed AND the player's rank number is different
+    const rankMoved = (dy !== 0 && prevRank !== currentRank && prevRank > 0 && currentRank > 0);
+
+    if(rankMoved){
+        // Ensure it has the base green highlight and the moving styles
+        el.classList.add('moving', 'updated-cell'); 
+        
+        // Apply initial transform to old position
         el.style.transform=`translateY(${dy}px)`; 
-        el.getBoundingClientRect(); 
+        el.getBoundingClientRect(); // Forces reflow
+        
+        // Start animation to new position
         requestAnimationFrame(()=>{
-          el.style.transition='transform 500ms cubic-bezier(.2,.8,.2,1)';
-          el.style.transform='';
-          el.addEventListener('transitionend',function onEnd(e){
-            if(e.propertyName==='transform'){ 
-              el.classList.remove('moving'); 
-              el.style.transition=''; 
-              el.removeEventListener('transitionend',onEnd); 
-              setTimeout(() => el.classList.remove('updated-cell'), 200); 
-            }
-          });
+            el.style.transition='transform 500ms cubic-bezier(.2,.8,.2,1)';
+            el.style.transform='';
+            el.addEventListener('transitionend',function onEnd(e){
+                if(e.propertyName==='transform'){ 
+                    el.classList.remove('moving'); 
+                    el.style.transition=''; 
+                    el.removeEventListener('transitionend',onEnd); 
+                    // Keep green flash briefly after animation
+                    setTimeout(() => el.classList.remove('updated-cell'), 500); 
+                }
+            });
         });
-      } else {
-         if (el.classList.contains('updated-cell')) {
-             setTimeout(() => el.classList.remove('updated-cell'), 1400); 
-             el.classList.remove('moving');
-         }
-      }
+    } else {
+        // If data changed but rank/position didn't move, just keep the flash and remove it later.
+        if (el.classList.contains('updated-cell')) {
+            setTimeout(() => el.classList.remove('updated-cell'), 1400); 
+        }
+        el.classList.remove('moving'); // Safety cleanup
     }
   });
 }
 
+/**
+ * Renders the top 3 players onto the podium structure.
+ */
 function renderPodium(top3){
   const rankTexts = ['1st 🥇', '2nd 🥈', '3rd 🥉'];
-  // Note: Pods are ordered: Second, First, Third in the HTML
+  // The HTML is ordered 2nd, 1st, 3rd, so we map the data accordingly
   const pods=[podium.querySelector('.pod.second'),podium.querySelector('.pod.first'),podium.querySelector('.pod.third')];
-  // Data map is indexed: 2nd place, 1st place, 3rd place from the sorted array
   const dataMap=[top3[1],top3[0],top3[2]]; 
   const textMap = [rankTexts[1], rankTexts[0], rankTexts[2]];
   
-  // Render based on the sorted order
   for(let i=0;i<3;i++){
     const pod=pods[i],data=dataMap[i]; 
     if(!pod) continue;
@@ -441,6 +522,9 @@ function renderPodium(top3){
   }
 }
 
+/**
+ * Main function to fetch, process, sort, and render the data.
+ */
 function processAndRender(allRows){
   if(!allRows||allRows.length<1) return;
   const originalHeaders=allRows[0].map(h=>h||''); 
@@ -477,11 +561,13 @@ function processAndRender(allRows){
     return { key, name, points, rowData:row };
   });
   
+  // MANDATORY SORTING: Descending by Points, Ascending by Name (tiebreaker)
   rowObjs.sort((a,b)=>{ 
     if(b.points!==a.points) return b.points-a.points; 
     return a.name.localeCompare(b.name); 
   });
   
+  // Calculate Ranks (handles ties)
   let rank=0, lastPoints=null;
   rowObjs.forEach((r,idx)=>{ 
     if(lastPoints===null||r.points!==lastPoints){ 
@@ -496,11 +582,15 @@ function processAndRender(allRows){
   animateReorderAndRender(newOrderedRows, nameIdx, ptsIdx, originalHeaders);
   renderPodium(rowObjs.slice(0,3).map(r=>({ name:r.name, points:r.points })));
   
+  // Save current state for next comparison
   previousRowsMap.clear(); 
   rowObjs.forEach(r=>previousRowsMap.set(r.key,r.rowData.slice())); 
   previousOrder=rowObjs.map(r=>r.key);
 }
 
+/**
+ * Initiates the leaderboard update process.
+ */
 async function updateLeaderboard(){
   try{
     const csv=await fetchSheetCSV();
@@ -509,6 +599,7 @@ async function updateLeaderboard(){
   }catch(err){ console.error("🛑 Failed to update leaderboard:",err); }
 }
 
+// Initial load and set interval for continuous updates
 updateLeaderboard();
 setInterval(updateLeaderboard,POLL_MS);
 </script>
