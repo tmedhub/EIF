@@ -170,6 +170,7 @@
 </div>
 
 <script>
+// IMPORTANT: Use your correct public Google Sheet URL here
 const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTQi-z2SLLIg21-uohF1NG58lzZZuPZ6V_wGuQ_g-PTmjvRHcUR3e6PPg4K80i7_Qia_YZkDIJS2eCL/pub?gid=0&single=true&output=csv";
 
 const tableHead = document.querySelector("#leaderboard thead");
@@ -188,7 +189,7 @@ function parseCSV(text){
       if(inQuotes && next==='"'){ cur+='"'; i++; } else { inQuotes=!inQuotes; }
     } else if(ch===',' && !inQuotes){ row.push(cur); cur=""; }
     else if((ch==='\n'||(ch==='\r'&&text[i+1]==='\n')) && !inQuotes){
-      if(ch==='r'&&text[i+1]==='\n'){ i++; }
+      if(ch==='\r'&&text[i+1]==='\n'){ i++; }
       row.push(cur); rows.push(row.map(c=>c.trim())); row=[]; cur="";
     } else { cur+=ch; }
   }
@@ -199,18 +200,29 @@ function parseCSV(text){
 function detectPointsColumn(headers, rows){
   const normalized = headers.map(h=>(h||"").toLowerCase());
   const candidates = ['total','points','score','pts'];
+  // 1. Check for header candidates first
   for(let c of candidates){
     const idx = normalized.indexOf(c);
     if(idx!==-1) return idx;
   }
-  if(rows.length>0){
-    const firstRow = rows[0];
-    for(let i=firstRow.length-1;i>=0;i--){
-      const v=firstRow[i].replace(/[^0-9.\-]/g,"");
-      if(v!==""&&!isNaN(Number(v))) return i;
+  // 2. Fallback: check if a column looks like numbers (more than 50% are numbers)
+  if(rows.length > 0) {
+    for (let i = headers.length - 1; i >= 0; i--) {
+        let numberCount = 0;
+        rows.forEach(row => {
+            const v = (row[i] || '').toString().replace(/[^0-9.\-]/g, '').trim();
+            if (v !== '' && !isNaN(Number(v))) {
+                numberCount++;
+            }
+        });
+        // If more than 50% of the rows in this column are numbers, assume it's the points column
+        if (numberCount / rows.length > 0.5) {
+            return i;
+        }
     }
   }
-  return headers.length-1;
+  // 3. Absolute fallback: assume the last column
+  return headers.length > 0 ? headers.length - 1 : 0;
 }
 
 async function fetchSheetCSV(){
@@ -227,14 +239,27 @@ function buildHeader(headers){
   tableHead.innerHTML=""; tableHead.appendChild(tr);
 }
 
-function playerKeyFromRow(headers,row){
-  const normalized=headers.map(h=>(h||"").toLowerCase());
-  const nameIdxCandidates=['id','player','name','team'];
-  for(let c of nameIdxCandidates){
-    const idx=normalized.indexOf(c); if(idx!==-1&&row[idx]) return row[idx];
+function playerKeyFromRow(headers, row, nameIdx, ptsIdx){
+  const normalized = headers.map(h=>(h||"").toLowerCase());
+  const candidates = ['id','player','name','team'];
+  
+  // 1. Prioritize a column with a clear ID/Name header
+  for(let c of candidates){
+    const idx=normalized.indexOf(c); 
+    if(idx!==-1 && row[idx]) return row[idx];
   }
-  if(row.length>=2&&row[1]) return row[1];
-  return JSON.stringify(row);
+  
+  // 2. Fallback: Use the determined Name column index if it exists and is not the points column
+  if(nameIdx !== -1 && row[nameIdx] && nameIdx !== ptsIdx) return row[nameIdx];
+  
+  // 3. Last fallback: Use the very first non-empty cell that isn't the points column
+  for(let i = 0; i < row.length; i++) {
+      if (i !== ptsIdx && row[i] && row[i].trim() !== '') {
+          return row[i];
+      }
+  }
+
+  return JSON.stringify(row); // Use all data as a key if no specific name/ID is found
 }
 
 function animateReorderAndRender(newOrderedRows){
@@ -293,36 +318,76 @@ function animateReorderAndRender(newOrderedRows){
 }
 
 function renderPodium(top3){
+  // Note: Pods are ordered: Second, First, Third in the HTML
   const pods=[podium.querySelector('.pod.second'),podium.querySelector('.pod.first'),podium.querySelector('.pod.third')];
-  const dataMap=[top3[1],top3[0],top3[2]];
+  // Data map is indexed: 1st place, 2nd place, 3rd place from the sorted array
+  const dataMap=[top3[1],top3[0],top3[2]]; 
+  
+  // Render based on the sorted order
   for(let i=0;i<3;i++){
     const pod=pods[i],data=dataMap[i]; if(!pod) continue;
     const nameEl=pod.querySelector('.name'), pointsEl=pod.querySelector('.points');
-    if(data){ nameEl.textContent=data.name||'—'; nameEl.classList.remove('muted'); pointsEl.textContent=(data.points!=null?data.points:'0')+' pts'; }
-    else{ nameEl.textContent='—'; pointsEl.textContent='0 pts'; nameEl.classList.add('muted'); }
+    
+    if(data){ 
+      // Use the name property, which is set to rowData[nameIdx]
+      let displayName = data.name || '—'; 
+      
+      nameEl.textContent=displayName; 
+      nameEl.classList.remove('muted'); 
+      pointsEl.textContent=(data.points!=null?data.points:'0')+' pts'; 
+    }
+    else{ 
+      nameEl.textContent='—'; 
+      pointsEl.textContent='0 pts'; 
+      nameEl.classList.add('muted'); 
+    }
   }
 }
 
 function processAndRender(allRows){
   if(!allRows||allRows.length<1) return;
-  const headers=allRows[0].map(h=>h||''), rawRows=allRows.slice(1).filter(r=>r.some(c=>c.trim()!==""));
+  const headers=allRows[0].map(h=>h||'').filter(h => h !== ''); // Filter out empty header cells
+  const rawRows=allRows.slice(1).filter(r=>r.some(c=>c.trim()!==""));
+  
   const ptsIdx=detectPointsColumn(headers,rawRows);
-  const nameIdx=(()=>{
-    const normalized=headers.map(h=>(h||"").toLowerCase());
-    const candidates=['name','player','team','id'];
-    for(let c of candidates){ const idx=normalized.indexOf(c); if(idx!==-1) return idx; }
-    return Math.min(1, headers.length-1);
-  })();
+  
+  let nameIdx = -1;
+  const normalizedHeaders = headers.map(h => (h || "").toLowerCase());
+  const nameCandidates = ['name', 'player', 'team', 'id'];
+
+  // 1. Find name column by header
+  for (let c of nameCandidates) {
+    const idx = normalizedHeaders.indexOf(c);
+    if (idx !== -1) {
+      nameIdx = idx;
+      break;
+    }
+  }
+  
+  // 2. Fallback: If no clear header or the header is the points column, find the first non-points column
+  if (nameIdx === -1 || nameIdx === ptsIdx) {
+    nameIdx = headers.findIndex((_, i) => i !== ptsIdx);
+    if (nameIdx === -1) nameIdx = 0; // Absolute fallback
+  }
+
+  // Final check: if name and points are the same column, we have a problem, but stick to the best guess.
+  if (nameIdx === ptsIdx && headers.length > 1) {
+      console.warn("Name and Points column are the same! Defaulting name to column 0.");
+      nameIdx = 0; // Force name to the first column (assuming points are elsewhere)
+  }
+  
   const rowObjs=rawRows.map(row=>{
     const ptsRaw=(row[ptsIdx]||'').toString().replace(/[^0-9.\-]/g,'').trim();
     const points=ptsRaw===''||isNaN(Number(ptsRaw))?0:Number(ptsRaw);
-    const name=(row[nameIdx]||'').toString();
-    const key=playerKeyFromRow(headers,row);
-    return { key,name,points,rowData:row };
+    const name=(row[nameIdx]||'').toString(); // Use the determined name index
+    const key=playerKeyFromRow(headers,row, nameIdx, ptsIdx);
+    return { key, name, points, rowData:row };
   });
+  
   rowObjs.sort((a,b)=>{ if(b.points!==a.points) return b.points-a.points; return a.name.localeCompare(b.name); });
   let rank=0, lastPoints=null;
   rowObjs.forEach((r,idx)=>{ if(lastPoints===null||r.points!==lastPoints){ rank=idx+1; lastPoints=r.points; } r.rank=rank; });
+  
   buildHeader(headers);
   const newOrderedRows=rowObjs.map(r=>({ key:r.key,rowData:r.rowData,rank:r.rank }));
   animateReorderAndRender(newOrderedRows);
