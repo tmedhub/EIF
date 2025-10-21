@@ -4,17 +4,24 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>EIF Leaderboard</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg1: #ff8a00;
-    --bg2: #ffd24d;
-    --glass: rgba(0,0,0,0.08); /* Darker glass for white table contrast */
-    --glass-2: rgba(0,0,0,0.12);
-    --accent: #111; /* Dark text for white background */
-    --update-glow: rgba(0,200,0,0.15); /* Lighter glow for white table */
-    --table-bg: #fff; /* White table background */
+    /* Original Gradient Colors */
+    --bg1: #ff8a00; /* Deep Orange */
+    --bg2: #ffd24d; /* Golden Yellow */
+    
+    /* New Aesthetic Enhancements */
+    --accent: #111; 
+    --table-bg: #fff; 
     --table-shadow: rgba(0,0,0,0.15);
+    --update-glow: rgba(0, 150, 0, 0.2);
+    
+    /* Podium Colors */
+    --gold: #FFD700;
+    --silver: #C0C0C0;
+    --bronze: #CD7F32;
+    --pod-bg: rgba(255, 255, 255, 0.95); /* Nearly white background for structure */
   }
   html,body{height:100%;margin:0;}
   body{
@@ -24,22 +31,29 @@
     align-items:center;
     gap:20px;
     font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-    color:white; /* Main body text color */
+    color:white; 
     padding:28px;
     background: linear-gradient(135deg, var(--bg1) 0%, var(--bg2) 60%);
     background-attachment: fixed;
   }
+  
+  /* --- AESTHETIC HEADING --- */
   h1{
     margin:0;
-    font-size:2rem;
-    letter-spacing:2px;
+    font-size:2.8rem; /* Larger font */
+    font-weight: 900; /* Bolder font */
+    letter-spacing:3px;
     text-transform:uppercase;
     display:flex;
     align-items:center;
     gap:12px;
-    color: white; /* Title remains white for contrast with background */
-    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    color: #fff; 
+    text-shadow: 
+        0 4px 6px rgba(0,0,0,0.3), /* Deeper shadow for pop */
+        0 0 10px rgba(255,255,255,0.4); /* Subtle white glow */
   }
+  
+  /* --- AESTHETIC PODIUM WRAPPER AND INDIVIDUAL PODS --- */
   .podium-wrap{
     width:90%;
     max-width:1000px;
@@ -62,27 +76,34 @@
     width:180px;
     min-height:110px;
     border-radius:12px;
-    background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.7)); /* Lighter background for pods */
+    /* Smoother, slightly 'neomorphic' light background */
+    background: var(--pod-bg); 
     color: var(--accent);
-    box-shadow: 0 8px 30px var(--table-shadow);
+    box-shadow: 
+        0 10px 20px rgba(0,0,0,0.2), /* Soft general shadow */
+        0 0 0 1px rgba(0,0,0,0.05) inset; /* Subtle inner border for depth */
     display:flex;
     flex-direction:column;
     align-items:center;
     justify-content:flex-end;
-    padding:12px;
+    padding:16px 12px; /* Increased vertical padding */
     position:relative;
     transform-origin: bottom center;
     transition: transform 300ms ease;
   }
+  
   .pod .place{
-    font-weight:900;
-    font-size:2.5rem; /* Larger emoji size */
-    margin-bottom:6px;
+    font-weight:900; /* Super bold rank text */
+    font-size:1.6rem; 
+    margin-bottom:8px;
     line-height:1;
+    display: flex;
+    align-items: center;
+    gap: 6px;
   }
   .pod .name{
-    font-weight:600;
-    font-size:1.1rem;
+    font-weight:700; /* Bolder name */
+    font-size:1.2rem; /* Slightly larger name */
     white-space:nowrap;
     text-overflow:ellipsis;
     overflow:hidden;
@@ -91,34 +112,38 @@
     color: var(--accent);
   }
   .pod .points{
-    font-size:1rem;
-    margin-top:6px;
+    font-size:1.1rem; /* Slightly larger points */
+    margin-top:8px;
     background: rgba(0,0,0,0.1);
-    padding:6px 8px;
-    border-radius:8px;
-    font-weight:700;
+    padding:6px 10px;
+    border-radius:10px; /* More rounded points badge */
+    font-weight:800; /* Extra bold points */
     color: var(--accent);
   }
-  .pod.first{ height:180px; transform: translateY(-10px) scale(1.04); border: 3px solid #FFD700; } /* Gold border */
-  .pod.second{ height:150px; transform: translateY(0) scale(1.00); border: 3px solid #C0C0C0; } /* Silver border */
-  .pod.third{ height:130px; transform: translateY(6px) scale(.98); border: 3px solid #CD7F32; } /* Bronze border */
+  /* Specific Pod Heights and Borders (Aesthetic Medals) */
+  .pod.first{ height:180px; transform: translateY(-10px) scale(1.04); border: 4px solid var(--gold); box-shadow: 0 0 25px var(--gold); } 
+  .pod.second{ height:150px; transform: translateY(0) scale(1.00); border: 3px solid var(--silver); box-shadow: 0 0 15px var(--silver); } 
+  .pod.third{ height:130px; transform: translateY(6px) scale(.98); border: 3px solid var(--bronze); box-shadow: 0 0 10px var(--bronze); } 
+  
+  /* --- TABLE STYLING (Kept from previous version, just ensuring no conflict) --- */
   .table-wrap{
     width: 90%;
     max-width: 1000px;
-    background: var(--table-bg); /* White background */
+    background: var(--table-bg); 
     border-radius:14px;
     padding:10px;
     box-shadow: 0 10px 30px var(--table-shadow);
   }
   table{
     width:100%;
-    border-collapse: collapse;
+    border-collapse: separate; 
+    border-spacing: 0 8px;    
     overflow: hidden;
-    color:var(--accent); /* Dark text for the table */
+    color:var(--accent); 
     table-layout:auto;
   }
   thead th{
-    background: rgba(0,0,0,0.05); /* Light header bar */
+    background: rgba(0,0,0,0.05); 
     padding:12px 10px;
     text-transform:uppercase;
     font-size:0.85rem;
@@ -126,50 +151,53 @@
     text-align:center;
     border-bottom:1px solid rgba(0,0,0,0.1);
   }
+  tbody tr{
+    border-radius: 8px; 
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05); 
+    background-color: white; 
+    transition: transform 500ms cubic-bezier(.2,.8,.2,1), background-color 220ms ease;
+    will-change: transform;
+    position: relative; /* Needed for z-index on moving */
+  }
   tbody td{
     padding:12px 10px;
     text-align:center;
-    border-bottom:1px dashed rgba(0,0,0,0.08); /* Light dividers */
+    border-bottom: none; 
     font-size:0.95rem;
     vertical-align:middle;
   }
-  tbody tr:last-child td{ border-bottom: none; } /* Remove bottom border for last row */
-  tbody tr{
-    transition: transform 500ms ease, background-color 220ms ease;
-    will-change: transform;
+  tbody td:first-child { border-top-left-radius: 8px; border-bottom-left-radius: 8px; }
+  tbody td:last-child { border-top-right-radius: 8px; border-bottom-right-radius: 8px; }
+
+  /* Animation Classes */
+  tbody tr.updated-cell, tbody tr.moving {
+    background-color: var(--update-glow) !important; 
   }
-  tbody tr.updated-cell td.changed {
-    animation: cell-glow 1.2s ease;
-  }
-  @keyframes cell-glow {
-    0% { background-color: var(--update-glow); }
-    100% { background-color: transparent; }
-  }
+  
   .moving {
     box-shadow: 0 8px 24px var(--table-shadow);
-    border-radius:8px;
-    background: rgba(0,0,0,0.01);
+    z-index: 1; 
   }
   @media (max-width:760px){
+    h1{font-size:1.8rem;}
     .pod{ width:120px; min-height:90px; }
     .pod.first{height:140px;}
     .pod.second{height:120px;}
     .pod.third{height:110px;}
-    h1{font-size:1.2rem;}
-    .pod .place { font-size: 1.8rem; }
+    .pod .place { font-size: 1.1rem; }
     .pod .name { font-size: 0.9rem; }
   }
   .muted{opacity:0.9;font-weight:600;font-size:0.9rem;}
 </style>
 </head>
 <body>
-<h1>EIF Leaderboard</h1> 
+<h1>EIF LEADERBOARD</h1> 
 
 <div class="podium-wrap">
   <div class="podium" id="podium">
-    <div class="pod second" data-place="2"><div class="place">🥈</div><div class="name muted">—</div><div class="points">0 pts</div></div>
-    <div class="pod first" data-place="1"><div class="place">🥇</div><div class="name muted">—</div><div class="points">0 pts</div></div>
-    <div class="pod third" data-place="3"><div class="place">🥉</div><div class="name muted">—</div><div class="points">0 pts</div></div>
+    <div class="pod second" data-place="2"><div class="place">2nd 🥈</div><div class="name muted">—</div><div class="points">0 pts</div></div>
+    <div class="pod first" data-place="1"><div class="place">1st 🥇</div><div class="name muted">—</div><div class="points">0 pts</div></div>
+    <div class="pod third" data-place="3"><div class="place">3rd 🥉</div><div class="name muted">—</div><div class="points">0 pts</div></div>
   </div>
 </div>
 
@@ -184,12 +212,12 @@
 // IMPORTANT: Use your correct public Google Sheet URL here
 const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTQi-z2SLLIg21-uohF1NG58lzZZuPZ6V_wGuQ_g-PTmjvRHcUR3e6PPg4K80i7_Qia_YZkDIJS2eCL/pub?gid=0&single=true&output=csv";
 
-const tableHead = document.querySelector("#leaderboard thead");
+const tableHead = document.querySelector("#leaderboard a thead");
 const tableBody = document.querySelector("#leaderboard tbody");
 const podium = document.getElementById("podium");
 let previousRowsMap = new Map();
 let previousOrder = [];
-const POLL_MS = 20000; // Increased to 20 seconds, as requested (was 15s)
+const POLL_MS = 20000; 
 
 function parseCSV(text){
   const rows = [];
@@ -211,12 +239,10 @@ function parseCSV(text){
 function detectPointsColumn(headers, rows){
   const normalized = headers.map(h=>(h||"").toLowerCase().replace(/[^a-z0-9]/g, ''));
   const candidates = ['total','points','score','pts'];
-  // 1. Check for header candidates first
   for(let c of candidates){
     const idx = normalized.indexOf(c);
     if(idx!==-1) return idx;
   }
-  // 2. Fallback: check if a column looks like numbers
   if(rows.length > 0) {
     for (let i = headers.length - 1; i >= 0; i--) {
         let numberCount = 0;
@@ -243,9 +269,7 @@ function buildHeader(headers, ptsIdx){
   const tr=document.createElement('tr');
   const rankTh=document.createElement('th'); rankTh.textContent='Rank'; tr.appendChild(rankTh);
   
-  // Only use headers from the sheet that are NOT the points column (to prevent double points columns)
   headers.forEach((h, i) => { 
-    // Filter out common "Rank" headers from the data itself
     const normalizedH = (h||'').toLowerCase().replace(/[^a-z0-9]/g, '');
     if (i !== ptsIdx && normalizedH !== 'rank' && normalizedH !== 'no') {
       const th=document.createElement('th'); 
@@ -254,7 +278,6 @@ function buildHeader(headers, ptsIdx){
     }
   });
   
-  // Explicitly add a Points header, even if it was filtered out (to ensure a Points column exists)
   const ptsHeader = headers[ptsIdx] || 'Points';
   const ptsTh=document.createElement('th'); 
   ptsTh.textContent = ptsHeader;
@@ -268,16 +291,13 @@ function playerKeyFromRow(headers, row, nameIdx, ptsIdx){
   const normalized = headers.map(h=>(h||"").toLowerCase().replace(/[^a-z0-9]/g, ''));
   const candidates = ['id','player','name','team'];
   
-  // 1. Prioritize a column with a clear ID/Name header
   for(let c of candidates){
     const idx=normalized.indexOf(c); 
     if(idx!==-1 && row[idx]) return row[idx];
   }
   
-  // 2. Fallback: Use the determined Name column index if it exists and is not the points column
   if(nameIdx !== -1 && row[nameIdx] && nameIdx !== ptsIdx) return row[nameIdx];
   
-  // 3. Last fallback: Use the very first non-empty cell that isn't the points column
   for(let i = 0; i < row.length; i++) {
       if (i !== ptsIdx && row[i] && row[i].trim() !== '') {
           return row[i];
@@ -297,20 +317,23 @@ function animateReorderAndRender(newOrderedRows, nameIdx, ptsIdx, originalHeader
   newOrderedRows.forEach(item=>{
     const {key,rowData}=item;
     let tr=oldElements[key];
-    if(!tr){ tr=document.createElement('tr'); tr.dataset.key=key; } else { tr.classList.remove('updated-cell'); }
+    
+    if(!tr){ 
+      tr=document.createElement('tr'); 
+      tr.dataset.key=key; 
+    } else { 
+      tr.classList.remove('updated-cell', 'moving'); 
+    }
+    
     tr.innerHTML="";
     
-    // 1. Add the calculated Rank column
     const rankTd=document.createElement('td'); 
     rankTd.textContent=item.rank; 
     tr.appendChild(rankTd);
     
-    // 2. Add the remaining data columns
     const dataCells = [];
     rowData.forEach((cellVal, i) => {
-      // Skip the points column as it's added last for consistency
       if (i !== ptsIdx) {
-        // Also skip if this column looks like a rank or index column
         const normalizedH = (originalHeaders[i]||'').toLowerCase().replace(/[^a-z0-9]/g, '');
         if (normalizedH !== 'rank' && normalizedH !== 'no') {
             const td=document.createElement('td'); 
@@ -321,27 +344,20 @@ function animateReorderAndRender(newOrderedRows, nameIdx, ptsIdx, originalHeader
     });
     dataCells.forEach(td => tr.appendChild(td));
     
-    // 3. Add the Points column last
     const ptsTd = document.createElement('td');
     ptsTd.textContent = rowData[ptsIdx] || '0';
     tr.appendChild(ptsTd);
 
 
-    // Check for updates and apply animation classes
     const prevRow=previousRowsMap.get(key)||[];
     if(prevRow.length){
-      const tds=tr.querySelectorAll('td');
       let changed=false;
-      // Check rank change
       const prevRank=previousOrder.indexOf(key)+1;
       if(prevRank!==item.rank && item.rank>0 && prevRank>0){ changed=true; }
       
-      // Check data change (excluding the first (Rank) column we added)
       for(let i=0;i<rowData.length;i++){
         const prevVal=prevRow[i]||"", curVal=rowData[i]||"";
         if(prevVal!==curVal){ 
-          // Find the corresponding cell in the HTML row to mark it changed
-          // This is complex because we skipped columns, so we just flag the row for animation
           changed=true; 
           break;
         }
@@ -354,60 +370,73 @@ function animateReorderAndRender(newOrderedRows, nameIdx, ptsIdx, originalHeader
   
   tableBody.innerHTML=""; tableBody.appendChild(frag);
   
-  // Animation logic remains the same
   const newRects={};
-  Array.from(tableBody.children).forEach(tr=>{ const key=tr.dataset.key; newRects[key]=tr.getBoundingClientRect(); });
+  Array.from(tableBody.children).forEach(tr=>{ 
+    const key=tr.dataset.key; 
+    newRects[key]=tr.getBoundingClientRect(); 
+    if (tr.classList.contains('updated-cell')) {
+         tr.classList.add('moving');
+    }
+  });
+
   Object.entries(newRects).forEach(([k,newRect])=>{
     const el=tableBody.querySelector(`tr[data-key='${CSS.escape(k)}']`);
     const oldRect=oldRects[k];
     if(oldRect){
       const dy=oldRect.top-newRect.top;
       if(dy!==0){
-        el.style.transform=`translateY(${dy}px)`; el.classList.add('moving'); el.getBoundingClientRect();
+        el.style.transform=`translateY(${dy}px)`; 
+        el.getBoundingClientRect(); 
         requestAnimationFrame(()=>{
           el.style.transition='transform 500ms cubic-bezier(.2,.8,.2,1)';
           el.style.transform='';
           el.addEventListener('transitionend',function onEnd(e){
-            if(e.propertyName==='transform'){ el.classList.remove('moving'); el.style.transition=''; el.removeEventListener('transitionend',onEnd); }
+            if(e.propertyName==='transform'){ 
+              el.classList.remove('moving'); 
+              el.style.transition=''; 
+              el.removeEventListener('transitionend',onEnd); 
+              setTimeout(() => el.classList.remove('updated-cell'), 200); 
+            }
           });
         });
+      } else {
+         if (el.classList.contains('updated-cell')) {
+             setTimeout(() => el.classList.remove('updated-cell'), 1400); 
+             el.classList.remove('moving');
+         }
       }
     }
   });
-  setTimeout(()=>{
-    Array.from(tableBody.querySelectorAll('tr.updated-cell')).forEach(tr=>{
-      tr.classList.remove('updated-cell');
-      tr.querySelectorAll('td.changed').forEach(td=> td.classList.remove('changed'));
-    });
-  },1400);
 }
 
 function renderPodium(top3){
-  const emojis = ['🥇', '🥈', '🥉'];
+  const rankTexts = ['1st 🥇', '2nd 🥈', '3rd 🥉'];
   // Note: Pods are ordered: Second, First, Third in the HTML
   const pods=[podium.querySelector('.pod.second'),podium.querySelector('.pod.first'),podium.querySelector('.pod.third')];
-  // Data map is indexed: 1st place, 2nd place, 3rd place from the sorted array
+  // Data map is indexed: 2nd place, 1st place, 3rd place from the sorted array
   const dataMap=[top3[1],top3[0],top3[2]]; 
+  const textMap = [rankTexts[1], rankTexts[0], rankTexts[2]];
   
   // Render based on the sorted order
   for(let i=0;i<3;i++){
-    const pod=pods[i],data=dataMap[i]; if(!pod) continue;
+    const pod=pods[i],data=dataMap[i]; 
+    if(!pod) continue;
     const placeEl=pod.querySelector('.place');
     const nameEl=pod.querySelector('.name'), pointsEl=pod.querySelector('.points');
     
+    // Set the rank text and emoji
+    placeEl.innerHTML = textMap[i] || `${i+1}th`; 
+    
     if(data){ 
       let displayName = data.name || '—'; 
-      
-      placeEl.textContent = emojis[i];
       nameEl.textContent=displayName; 
       nameEl.classList.remove('muted'); 
       pointsEl.textContent=(data.points!=null?data.points:'0')+' pts'; 
     }
     else{ 
-      placeEl.textContent = emojis[i];
       nameEl.textContent='—'; 
-      pointsEl.textContent='0 pts'; 
       nameEl.classList.add('muted'); 
+      pointsEl.textContent='0 pts'; 
     }
   }
 }
@@ -423,7 +452,6 @@ function processAndRender(allRows){
   const normalizedHeaders = originalHeaders.map(h => (h || "").toLowerCase().replace(/[^a-z0-9]/g, ''));
   const nameCandidates = ['name', 'player', 'team', 'id'];
 
-  // 1. Find name column by header
   for (let c of nameCandidates) {
     const idx = normalizedHeaders.indexOf(c);
     if (idx !== -1) {
@@ -432,13 +460,11 @@ function processAndRender(allRows){
     }
   }
   
-  // 2. Fallback: If no clear header or the header is the points column, find the first non-points column
   if (nameIdx === -1 || nameIdx === ptsIdx) {
     nameIdx = originalHeaders.findIndex((_, i) => i !== ptsIdx);
     if (nameIdx === -1) nameIdx = 0; 
   }
 
-  // Final check: if name and points are the same column and more than 1 column exists
   if (nameIdx === ptsIdx && originalHeaders.length > 1) {
       nameIdx = 0; 
   }
@@ -451,7 +477,6 @@ function processAndRender(allRows){
     return { key, name, points, rowData:row };
   });
   
-  // Sort logic (Points descending, then Name ascending for tie-breaker)
   rowObjs.sort((a,b)=>{ 
     if(b.points!==a.points) return b.points-a.points; 
     return a.name.localeCompare(b.name); 
@@ -459,7 +484,6 @@ function processAndRender(allRows){
   
   let rank=0, lastPoints=null;
   rowObjs.forEach((r,idx)=>{ 
-    // Use DENSE RANK logic: players with the same score get the same rank
     if(lastPoints===null||r.points!==lastPoints){ 
       rank=idx+1; 
       lastPoints=r.points; 
@@ -479,9 +503,7 @@ function processAndRender(allRows){
 
 async function updateLeaderboard(){
   try{
-    console.log(`Fetching data from sheet...`);
     const csv=await fetchSheetCSV();
-    console.log(`Data fetched successfully. Rows: ${csv.length}`);
     if(!csv||csv.length<=1){ tableHead.innerHTML="<tr><th>No data found or only header row</th></tr>"; tableBody.innerHTML=""; renderPodium([]); return; }
     processAndRender(csv);
   }catch(err){ console.error("🛑 Failed to update leaderboard:",err); }
