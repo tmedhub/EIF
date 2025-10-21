@@ -1,1 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>EIF Leaderboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* Page */
+    :root{
+      --bg1: #ff8a00; /* Orange */
+      --bg2: #ffd24d; /* Yellow */
+      --glass: rgba(255,255,255,0.08);
+      --glass-2: rgba(255,255,255,0.12);
+      --accent: rgba(255,255,255,0.95);
+      --update-glow: rgba(0,255,0,0.22);
+    }
+    html,body{height:100%;margin:0;}
+    body{
+      min-height:100%;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:20px;
+      font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      color:var(--accent);
+      padding:28px;
+      /* Gradient Orange Yellow Background (Issue 1 Resolved) */
+      background: linear-gradient(135deg, var(--bg1) 0%, var(--bg2) 60%);
+      background-attachment: fixed;
+    }
 
+    h1{
+      margin:0;
+      font-size:2rem;
+      letter-spacing:2px;
+      text-transform:uppercase;
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+
+    /* Podium */
+    .podium-wrap{
+      width:90%;
+      max-width:1000px;
+      display:flex;
+      justify-content:center;
+      align-items:flex-end;
+      gap:18px;
+      padding:10px;
+    }
+    .podium{
+      display:flex;
+      gap:16px;
+      align-items:flex-end;
+      width:100%;
+      justify-content:center;
+      max-width:900px;
+      margin-bottom:6px;
+    }
+    .pod{
+      width:180px;
+      min-height:110px;
+      border-radius:12px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0.04));
+      box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:flex-end;
+      padding:12px;
+      position:relative;
+      transform-origin: bottom center;
+      transition: transform 300ms ease;
+    }
+    .pod .place{
+      font-weight:700;
+      font-size:1.2rem;
+      margin-bottom:6px;
+    }
+    .pod .name{
+      font-weight:600;
+      font-size:1rem;
+      white-space:nowrap;
+      text-overflow:ellipsis;
+      overflow:hidden;
+      width:100%;
+      text-align:center;
+    }
+    .pod .points{
+      font-size:0.95rem;
+      margin-top:6px;
+      background: rgba(0,0,0,0.18);
+      padding:6px 8px;
+      border-radius:8px;
+      font-weight:700;
+    }
+    /* podium heights (Issue 6 Resolved) */
+    .pod.first{ height:180px; transform: translateY(-10px) scale(1.04); border: 3px solid rgba(255,255,255,0.14); }
+    .pod.second{ height:150px; transform: translateY(0) scale(1.00); }
+    .pod.third{ height:130px; transform: translateY(6px) scale(.98); }
+
+    /* Table */
+    .table-wrap{
+      width: 90%;
+      max-width: 1000px;
+      background: linear-gradient(180deg, rgba(0,0,0,0.12), rgba(0,0,0,0.06));
+      border-radius:14px;
+      padding:10px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    }
+
+    table{
+      width:100%;
+      border-collapse: collapse;
+      overflow: hidden;
+      color:var(--accent);
+      table-layout:auto;
+    }
+
+    thead th{
+      background: rgba(255,255,255,0.06);
+      padding:12px 10px;
+      text-transform:uppercase;
+      font-size:0.85rem;
+      letter-spacing:1px;
+      text-align:center;
+      border-bottom:1px solid rgba(255,255,255,0.06);
+    }
+
+    tbody td{
+      padding:12px 10px;
+      text-align:center;
+      border-bottom:1px dashed rgba(255,255,255,0.04);
+      font-size:0.95rem;
+      vertical-align:middle;
+    }
+
+    tbody tr{
+      transition: transform 500ms ease, background-color 220ms ease;
+      will-change: transform;
+    }
+
+    tbody tr.updated-cell td.changed {
+      animation: cell-glow 1.2s ease;
+    }
+
+    @keyframes cell-glow {
+      0% { background-color: var(--update-glow); }
+      100% { background-color: transparent; }
+    }
+
+    /* FLIP move highlight when ranks change (Issue 5 Resolved) */
+    .moving {
+      box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+      border-radius:8px;
+      background: rgba(255,255,255,0.02);
+    }
+
+    /* small devices */
+    @media (max-width:760px){
+      .pod{ width:120px; min-height:90px; }
+      .pod.first{height:140px;}
+      .pod.second{height:120px;}
+      .pod.third{height:110px;}
+      h1{font-size:1.2rem;}
+    }
+
+    /* utility */
+    .muted{opacity:0.9;font-weight:600;font-size:0.9rem;}
+  </style>
+</head>
+<body>
+    <h1>EIF Leaderboard</h1> 
+
+  <div class="podium-wrap">
+    <div class="podium" id="podium">
+            <div class="pod second" data-place="2"><div class="place">2</div><div class="name muted">—</div><div class="points">0 pts</div></div>
+      <div class="pod first" data-place="1"><div class="place">1</div><div class="name muted">—</div><div class="points">0 pts</div></div>
+      <div class="pod third" data-place="3"><div class="place">3</div><div class="name muted">—</div><div class="points">0 pts</div></div>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <table id="leaderboard" aria-label="Leaderboard">
+      <thead></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <script>
+    /*        === CONFIG ===
+       This is the **working** public CSV URL you provided.
+    */
+    const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTQi-z2SLLIg21-uohF1NG58lzZZuPZ6V_wGuQ_g-PTmjvRHcUR3e6PPg4K80i7_Qia_YZkDIJS2eCL/pub?gid=0&single=true&output=csv";
+
+    const tableHead = document.querySelector("#leaderboard thead");
+    const tableBody = document.querySelector("#leaderboard tbody");
+    const podium = document.getElementById("podium");
+
+    // store previous state for change detection and FLIP
+    let previousRowsMap = new Map();
+    let previousOrder = [];
+
+    const POLL_MS = 15000; // 15 seconds for updates
+
+    /* -- utility: robust CSV parser (handles quoted fields & commas) -- */
+    function parseCSV(text){
+      const rows = [];
+      let cur = "";
+      let row = [];
+      let inQuotes = false;
+      for (let i = 0; i < text.length; i++){
+        const ch = text[i];
+        const next = text[i+1];
+        if (ch === '"' ){
+          if (inQuotes && next === '"'){
+            cur += '"'; // escaped quote
+            i++;
+          } else {
+            inQuotes = !inQuotes;
+          }
+        } else if (ch === ',' && !inQuotes){
+          row.push(cur);
+          cur = "";
+        } else if ((ch === '\n' || (ch === '\r' && text[i+1] === '\n')) && !inQuotes){
+          // push row
+          if (ch === '\r' && text[i+1] === '\n') { i++; /* skip extra */ }
+          row.push(cur);
+          rows.push(row.map(c => c.trim()));
+          row = [];
+          cur = "";
+        } else {
+          cur += ch;
+        }
+      }
+      if (cur !== "" || row.length > 0){
+        row.push(cur);
+        rows.push(row.map(c => c.trim()));
+      }
+      return rows.filter(r => r.length > 0 && r.some(cell => cell !== ""));
+    }
+
+    /* -- auto-detect points column index -- */
+    function detectPointsColumn(headers, rows){
+      const normalized = headers.map(h => (h||"").toString().toLowerCase());
+      const candidates = ['total','points','score','pts'];
+      for (let c of candidates){
+        const idx = normalized.indexOf(c);
+        if (idx !== -1) return idx;
+      }
+      // fallback: find last numeric column
+      if (rows.length > 0){
+        const firstRow = rows[0];
+        for (let i = firstRow.length - 1; i >= 0; i--){
+          const v = firstRow[i].replace(/[^0-9.\-]/g,"");
+          if (v !== "" && !isNaN(Number(v))) return i;
+        }
+      }
+      return headers.length - 1; // final fallback
+    }
+
+    /* -- CSV fetch with cache busting to ensure fresh values -- */
+    async function fetchSheetCSV(){
+      const url = SHEET_URL + (SHEET_URL.includes('?') ? '&' : '?') + '_=' + Date.now();
+      const resp = await fetch(url, {cache: "no-store"});
+      if (!resp.ok) throw new Error("Failed to fetch sheet: " + resp.status);
+      const text = await resp.text();
+      return parseCSV(text);
+    }
+
+    /* -- Create table header with Rank column first (Issue 4) -- */
+    function buildHeader(headers){
+      const tr = document.createElement('tr');
+      // Rank added
+      const rankTh = document.createElement('th');
+      rankTh.textContent = 'Rank';
+      tr.appendChild(rankTh);
+      headers.forEach(h => {
+        const th = document.createElement('th');
+        th.textContent = h || '-';
+        tr.appendChild(th);
+      });
+      tableHead.innerHTML = "";
+      tableHead.appendChild(tr);
+    }
+
+    /* -- Utility to get unique player id from row -- */
+    function playerKeyFromRow(headers, row){
+      const normalized = headers.map(h => (h||"").toString().toLowerCase());
+      const nameIdxCandidates = ['id','player','name','team'];
+      for (let c of nameIdxCandidates){
+        const idx = normalized.indexOf(c);
+        if (idx !== -1 && row[idx]) return row[idx];
+      }
+      if (row.length >= 2 && row[1]) return row[1];
+      return JSON.stringify(row);
+    }
+
+    /* -- FLIP animation for reordering rows (Issue 5 Implemented) -- */
+    function animateReorderAndRender(newOrderedRows, headers){
+      const oldElements = {};
+      Array.from(tableBody.children).forEach(tr => {
+        const key = tr.dataset.key;
+        if (key) oldElements[key] = tr;
+      });
+
+      const oldRects = {};
+      Object.entries(oldElements).forEach(([k, el]) => {
+        oldRects[k] = el.getBoundingClientRect();
+      });
+
+      const frag = document.createDocumentFragment();
+      newOrderedRows.forEach(item => {
+        const {key, rowData} = item;
+        let tr = oldElements[key];
+        
+        if (!tr){
+          tr = document.createElement('tr');
+          tr.dataset.key = key;
+        } else {
+          tr.classList.remove('updated-cell');
+        }
+        
+        tr.innerHTML = "";
+        // Rank cell
+        const rankTd = document.createElement('td');
+        rankTd.textContent = item.rank;
+        tr.appendChild(rankTd);
+
+        rowData.forEach(cellVal => {
+          const td = document.createElement('td');
+          td.textContent = cellVal;
+          tr.appendChild(td);
+        });
+
+        // mark changed cells vs previousRowsMap
+        const prevRow = previousRowsMap.get(key) || [];
+        let changed = false;
+        if (prevRow.length){
+          const tds = tr.querySelectorAll('td');
+          for (let i=1;i<tds.length;i++){
+            const prevVal = prevRow[i-1] || "";
+            const curVal = rowData[i-1] || "";
+            // Check data cell value change
+            if (prevVal !== curVal){
+              tds[i].classList.add('changed');
+              changed = true;
+            }
+          }
+          // Check if rank changed
+          const prevRank = previousOrder.indexOf(key) + 1;
+          if (prevRank !== item.rank && item.rank > 0 && prevRank > 0){
+            changed = true;
+          }
+          if (changed) tr.classList.add('updated-cell');
+        }
+
+        frag.appendChild(tr);
+      });
+
+      tableBody.innerHTML = "";
+      tableBody.appendChild(frag);
+
+      // Measure new rects
+      const newRects = {};
+      Array.from(tableBody.children).forEach(tr => {
+        const key = tr.dataset.key;
+        newRects[key] = tr.getBoundingClientRect();
+      });
+
+      // Apply FLIP transforms
+      Object.entries(newRects).forEach(([k, newRect]) => {
+        const el = tableBody.querySelector(`tr[data-key='${CSS.escape(k)}']`);
+        const oldRect = oldRects[k];
+        if (oldRect){
+          const dy = oldRect.top - newRect.top;
+          if (dy !== 0){
+            el.style.transform = `translateY(${dy}px)`;
+            el.classList.add('moving');
+            el.getBoundingClientRect(); // force reflow
+            
+            requestAnimationFrame(() => {
+              el.style.transition = 'transform 500ms cubic-bezier(.2,.8,.2,1)';
+              el.style.transform = '';
+              el.addEventListener('transitionend', function onEnd(e){
+                if (e.propertyName === 'transform'){
+                  el.classList.remove('moving');
+                  el.style.transition = '';
+                  el.removeEventListener('transitionend', onEnd);
+                }
+              });
+            });
+          }
+        }
+      });
+
+      // cleanup: remove changed classes after animation
+      setTimeout(()=> {
+        Array.from(tableBody.querySelectorAll('tr.updated-cell')).forEach(tr=>{
+          tr.classList.remove('updated-cell');
+          tr.querySelectorAll('td.changed').forEach(td=> td.classList.remove('changed'));
+        });
+      }, 1400);
+    }
+
+    /* -- Render podium top 3 (Issue 6 Logic is correct) -- */
+    function renderPodium(top3){
+      // Order: 2nd, 1st, 3rd to match visual layout
+      const pods = [
+        podium.querySelector('.pod.second'),
+        podium.querySelector('.pod.first'),
+        podium.querySelector('.pod.third')
+      ];
+      
+      // Data mapping: top3[0] -> 1st place, top3[1] -> 2nd place, top3[2] -> 3rd place
+      const dataMap = [
+        top3[1], // Data for 2nd place pod
+        top3[0], // Data for 1st place pod
+        top3[2] // Data for 3rd place pod
+      ];
+
+      for (let i = 0; i < 3; i++) {
+        const pod = pods[i];
+        const data = dataMap[i];
+        if (!pod) continue;
+
+        const nameEl = pod.querySelector('.name');
+        const pointsEl = pod.querySelector('.points');
+        
+        if (data){
+          nameEl.textContent = data.name || '—';
+          nameEl.classList.remove('muted');
+          pointsEl.textContent = (data.points != null ? data.points : '0') + ' pts';
+        } else {
+          nameEl.textContent = '—';
+          pointsEl.textContent = '0 pts';
+          nameEl.classList.add('muted');
+        }
+      }
+    }
+
+    /* -- Main render function: sorts, sets ranks, updates table & podium (Issue 4 Logic is correct) -- */
+    function processAndRender(allRows){
+      if (!allRows || allRows.length < 1) return;
+      const headers = allRows[0].map(h => h || '');
+      const rawRows = allRows.slice(1).filter(r => r.some(cell => cell.trim() !== ""));
+
+      const ptsIdx = detectPointsColumn(headers, rawRows);
+      const nameIdx = (() => {
+        const normalized = headers.map(h => (h||"").toLowerCase());
+        const candidates = ['name','player','team','id'];
+        for (let c of candidates){
+          const idx = normalized.indexOf(c);
+          if (idx !== -1) return idx;
+        }
+        return Math.min(1, headers.length-1);
+      })();
+
+      const rowObjs = rawRows.map(row => {
+        const ptsRaw = (row[ptsIdx] || '').toString().replace(/[^0-9.\-]/g,'').trim();
+        const points = ptsRaw === '' || isNaN(Number(ptsRaw)) ? 0 : Number(ptsRaw);
+        const name = (row[nameIdx] || '').toString();
+        const key = playerKeyFromRow(headers, row);
+        return { key, name, points, rowData: row };
+      });
+
+      // Sort descending by points (Issue 4)
+      rowObjs.sort((a,b) => {
+        if (b.points !== a.points) return b.points - a.points;
+        // Tiebreaker: sort by name
+        return a.name.localeCompare(b.name);
+      });
+
+      // Assign ranks (dense rank)
+      let rank = 0;
+      let lastPoints = null;
+      rowObjs.forEach((r, idx) => {
+        if (lastPoints === null || r.points !== lastPoints){
+          rank = idx + 1;
+          lastPoints = r.points;
+        }
+        r.rank = rank;
+      });
+
+      buildHeader(headers);
+      const newOrderedRows = rowObjs.map(r => ({ key: r.key, rowData: r.rowData, rank: r.rank }));
+      animateReorderAndRender(newOrderedRows, headers);
+      renderPodium(rowObjs.slice(0,3).map(r => ({ name: r.name, points: r.points })));
+
+      // Update previous state for next diff
+      previousRowsMap.clear();
+      rowObjs.forEach(r => previousRowsMap.set(r.key, r.rowData.slice()));
+      previousOrder = rowObjs.map(r => r.key);
+    }
+
+    /* -- top-level update function -- */
+    async function updateLeaderboard(){
+      try {
+        console.log(`Fetching data from sheet...`);
+        const csv = await fetchSheetCSV();
+        console.log(`Data fetched successfully. Rows: ${csv.length}`);
+        if (!csv || csv.length <= 1){
+          tableHead.innerHTML = "<tr><th>No data found or only header row</th></tr>";
+          tableBody.innerHTML = "";
+          renderPodium([]);
+          return;
+        }
+        processAndRender(csv);
+      } catch (err){
+        console.error("🛑 Failed to update leaderboard. Check your Google Sheets URL and ensure CORS policy allows fetching:", err);
+      }
+    }
+
+    // initial load
+    updateLeaderboard();
+
+    // poller
+    setInterval(updateLeaderboard, POLL_MS);
+  </script>
+</body>
+</html>
