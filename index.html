@@ -9,10 +9,12 @@
   :root{
     --bg1: #ff8a00;
     --bg2: #ffd24d;
-    --glass: rgba(255,255,255,0.08);
-    --glass-2: rgba(255,255,255,0.12);
-    --accent: rgba(255,255,255,0.95);
-    --update-glow: rgba(0,255,0,0.22);
+    --glass: rgba(0,0,0,0.08); /* Darker glass for white table contrast */
+    --glass-2: rgba(0,0,0,0.12);
+    --accent: #111; /* Dark text for white background */
+    --update-glow: rgba(0,200,0,0.15); /* Lighter glow for white table */
+    --table-bg: #fff; /* White table background */
+    --table-shadow: rgba(0,0,0,0.15);
   }
   html,body{height:100%;margin:0;}
   body{
@@ -22,7 +24,7 @@
     align-items:center;
     gap:20px;
     font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-    color:var(--accent);
+    color:white; /* Main body text color */
     padding:28px;
     background: linear-gradient(135deg, var(--bg1) 0%, var(--bg2) 60%);
     background-attachment: fixed;
@@ -35,6 +37,8 @@
     display:flex;
     align-items:center;
     gap:12px;
+    color: white; /* Title remains white for contrast with background */
+    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
   }
   .podium-wrap{
     width:90%;
@@ -58,8 +62,9 @@
     width:180px;
     min-height:110px;
     border-radius:12px;
-    background: linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0.04));
-    box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+    background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.7)); /* Lighter background for pods */
+    color: var(--accent);
+    box-shadow: 0 8px 30px var(--table-shadow);
     display:flex;
     flex-direction:column;
     align-items:center;
@@ -70,61 +75,65 @@
     transition: transform 300ms ease;
   }
   .pod .place{
-    font-weight:700;
-    font-size:1.2rem;
+    font-weight:900;
+    font-size:2.5rem; /* Larger emoji size */
     margin-bottom:6px;
+    line-height:1;
   }
   .pod .name{
     font-weight:600;
-    font-size:1rem;
+    font-size:1.1rem;
     white-space:nowrap;
     text-overflow:ellipsis;
     overflow:hidden;
     width:100%;
     text-align:center;
+    color: var(--accent);
   }
   .pod .points{
-    font-size:0.95rem;
+    font-size:1rem;
     margin-top:6px;
-    background: rgba(0,0,0,0.18);
+    background: rgba(0,0,0,0.1);
     padding:6px 8px;
     border-radius:8px;
     font-weight:700;
+    color: var(--accent);
   }
-  .pod.first{ height:180px; transform: translateY(-10px) scale(1.04); border: 3px solid rgba(255,255,255,0.14); }
-  .pod.second{ height:150px; transform: translateY(0) scale(1.00); }
-  .pod.third{ height:130px; transform: translateY(6px) scale(.98); }
+  .pod.first{ height:180px; transform: translateY(-10px) scale(1.04); border: 3px solid #FFD700; } /* Gold border */
+  .pod.second{ height:150px; transform: translateY(0) scale(1.00); border: 3px solid #C0C0C0; } /* Silver border */
+  .pod.third{ height:130px; transform: translateY(6px) scale(.98); border: 3px solid #CD7F32; } /* Bronze border */
   .table-wrap{
     width: 90%;
     max-width: 1000px;
-    background: linear-gradient(180deg, rgba(0,0,0,0.12), rgba(0,0,0,0.06));
+    background: var(--table-bg); /* White background */
     border-radius:14px;
     padding:10px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    box-shadow: 0 10px 30px var(--table-shadow);
   }
   table{
     width:100%;
     border-collapse: collapse;
     overflow: hidden;
-    color:var(--accent);
+    color:var(--accent); /* Dark text for the table */
     table-layout:auto;
   }
   thead th{
-    background: rgba(255,255,255,0.06);
+    background: rgba(0,0,0,0.05); /* Light header bar */
     padding:12px 10px;
     text-transform:uppercase;
     font-size:0.85rem;
     letter-spacing:1px;
     text-align:center;
-    border-bottom:1px solid rgba(255,255,255,0.06);
+    border-bottom:1px solid rgba(0,0,0,0.1);
   }
   tbody td{
     padding:12px 10px;
     text-align:center;
-    border-bottom:1px dashed rgba(255,255,255,0.04);
+    border-bottom:1px dashed rgba(0,0,0,0.08); /* Light dividers */
     font-size:0.95rem;
     vertical-align:middle;
   }
+  tbody tr:last-child td{ border-bottom: none; } /* Remove bottom border for last row */
   tbody tr{
     transition: transform 500ms ease, background-color 220ms ease;
     will-change: transform;
@@ -137,9 +146,9 @@
     100% { background-color: transparent; }
   }
   .moving {
-    box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+    box-shadow: 0 8px 24px var(--table-shadow);
     border-radius:8px;
-    background: rgba(255,255,255,0.02);
+    background: rgba(0,0,0,0.01);
   }
   @media (max-width:760px){
     .pod{ width:120px; min-height:90px; }
@@ -147,6 +156,8 @@
     .pod.second{height:120px;}
     .pod.third{height:110px;}
     h1{font-size:1.2rem;}
+    .pod .place { font-size: 1.8rem; }
+    .pod .name { font-size: 0.9rem; }
   }
   .muted{opacity:0.9;font-weight:600;font-size:0.9rem;}
 </style>
@@ -156,9 +167,9 @@
 
 <div class="podium-wrap">
   <div class="podium" id="podium">
-    <div class="pod second" data-place="2"><div class="place">2</div><div class="name muted">—</div><div class="points">0 pts</div></div>
-    <div class="pod first" data-place="1"><div class="place">1</div><div class="name muted">—</div><div class="points">0 pts</div></div>
-    <div class="pod third" data-place="3"><div class="place">3</div><div class="name muted">—</div><div class="points">0 pts</div></div>
+    <div class="pod second" data-place="2"><div class="place">🥈</div><div class="name muted">—</div><div class="points">0 pts</div></div>
+    <div class="pod first" data-place="1"><div class="place">🥇</div><div class="name muted">—</div><div class="points">0 pts</div></div>
+    <div class="pod third" data-place="3"><div class="place">🥉</div><div class="name muted">—</div><div class="points">0 pts</div></div>
   </div>
 </div>
 
@@ -178,7 +189,7 @@ const tableBody = document.querySelector("#leaderboard tbody");
 const podium = document.getElementById("podium");
 let previousRowsMap = new Map();
 let previousOrder = [];
-const POLL_MS = 15000;
+const POLL_MS = 20000; // Increased to 20 seconds, as requested (was 15s)
 
 function parseCSV(text){
   const rows = [];
@@ -198,14 +209,14 @@ function parseCSV(text){
 }
 
 function detectPointsColumn(headers, rows){
-  const normalized = headers.map(h=>(h||"").toLowerCase());
+  const normalized = headers.map(h=>(h||"").toLowerCase().replace(/[^a-z0-9]/g, ''));
   const candidates = ['total','points','score','pts'];
   // 1. Check for header candidates first
   for(let c of candidates){
     const idx = normalized.indexOf(c);
     if(idx!==-1) return idx;
   }
-  // 2. Fallback: check if a column looks like numbers (more than 50% are numbers)
+  // 2. Fallback: check if a column looks like numbers
   if(rows.length > 0) {
     for (let i = headers.length - 1; i >= 0; i--) {
         let numberCount = 0;
@@ -215,13 +226,9 @@ function detectPointsColumn(headers, rows){
                 numberCount++;
             }
         });
-        // If more than 50% of the rows in this column are numbers, assume it's the points column
-        if (numberCount / rows.length > 0.5) {
-            return i;
-        }
+        if (numberCount / rows.length > 0.5) { return i; }
     }
   }
-  // 3. Absolute fallback: assume the last column
   return headers.length > 0 ? headers.length - 1 : 0;
 }
 
@@ -232,15 +239,33 @@ async function fetchSheetCSV(){
   return parseCSV(await resp.text());
 }
 
-function buildHeader(headers){
+function buildHeader(headers, ptsIdx){
   const tr=document.createElement('tr');
   const rankTh=document.createElement('th'); rankTh.textContent='Rank'; tr.appendChild(rankTh);
-  headers.forEach(h=>{ const th=document.createElement('th'); th.textContent=h||'-'; tr.appendChild(th); });
-  tableHead.innerHTML=""; tableHead.appendChild(tr);
+  
+  // Only use headers from the sheet that are NOT the points column (to prevent double points columns)
+  headers.forEach((h, i) => { 
+    // Filter out common "Rank" headers from the data itself
+    const normalizedH = (h||'').toLowerCase().replace(/[^a-z0-9]/g, '');
+    if (i !== ptsIdx && normalizedH !== 'rank' && normalizedH !== 'no') {
+      const th=document.createElement('th'); 
+      th.textContent=h||'—'; 
+      tr.appendChild(th); 
+    }
+  });
+  
+  // Explicitly add a Points header, even if it was filtered out (to ensure a Points column exists)
+  const ptsHeader = headers[ptsIdx] || 'Points';
+  const ptsTh=document.createElement('th'); 
+  ptsTh.textContent = ptsHeader;
+  tr.appendChild(ptsTh);
+  
+  tableHead.innerHTML=""; 
+  tableHead.appendChild(tr);
 }
 
 function playerKeyFromRow(headers, row, nameIdx, ptsIdx){
-  const normalized = headers.map(h=>(h||"").toLowerCase());
+  const normalized = headers.map(h=>(h||"").toLowerCase().replace(/[^a-z0-9]/g, ''));
   const candidates = ['id','player','name','team'];
   
   // 1. Prioritize a column with a clear ID/Name header
@@ -259,37 +284,77 @@ function playerKeyFromRow(headers, row, nameIdx, ptsIdx){
       }
   }
 
-  return JSON.stringify(row); // Use all data as a key if no specific name/ID is found
+  return JSON.stringify(row);
 }
 
-function animateReorderAndRender(newOrderedRows){
+function animateReorderAndRender(newOrderedRows, nameIdx, ptsIdx, originalHeaders){
   const oldElements={};
   Array.from(tableBody.children).forEach(tr=>{ const key=tr.dataset.key; if(key) oldElements[key]=tr; });
   const oldRects={};
   Object.entries(oldElements).forEach(([k,el])=>{ oldRects[k]=el.getBoundingClientRect(); });
   const frag=document.createDocumentFragment();
+
   newOrderedRows.forEach(item=>{
     const {key,rowData}=item;
     let tr=oldElements[key];
     if(!tr){ tr=document.createElement('tr'); tr.dataset.key=key; } else { tr.classList.remove('updated-cell'); }
     tr.innerHTML="";
-    const rankTd=document.createElement('td'); rankTd.textContent=item.rank; tr.appendChild(rankTd);
-    rowData.forEach(cellVal=>{ const td=document.createElement('td'); td.textContent=cellVal; tr.appendChild(td); });
+    
+    // 1. Add the calculated Rank column
+    const rankTd=document.createElement('td'); 
+    rankTd.textContent=item.rank; 
+    tr.appendChild(rankTd);
+    
+    // 2. Add the remaining data columns
+    const dataCells = [];
+    rowData.forEach((cellVal, i) => {
+      // Skip the points column as it's added last for consistency
+      if (i !== ptsIdx) {
+        // Also skip if this column looks like a rank or index column
+        const normalizedH = (originalHeaders[i]||'').toLowerCase().replace(/[^a-z0-9]/g, '');
+        if (normalizedH !== 'rank' && normalizedH !== 'no') {
+            const td=document.createElement('td'); 
+            td.textContent=cellVal; 
+            dataCells.push(td);
+        }
+      }
+    });
+    dataCells.forEach(td => tr.appendChild(td));
+    
+    // 3. Add the Points column last
+    const ptsTd = document.createElement('td');
+    ptsTd.textContent = rowData[ptsIdx] || '0';
+    tr.appendChild(ptsTd);
+
+
+    // Check for updates and apply animation classes
     const prevRow=previousRowsMap.get(key)||[];
     if(prevRow.length){
       const tds=tr.querySelectorAll('td');
       let changed=false;
-      for(let i=1;i<tds.length;i++){
-        const prevVal=prevRow[i-1]||"", curVal=rowData[i-1]||"";
-        if(prevVal!==curVal){ tds[i].classList.add('changed'); changed=true; }
-      }
+      // Check rank change
       const prevRank=previousOrder.indexOf(key)+1;
       if(prevRank!==item.rank && item.rank>0 && prevRank>0){ changed=true; }
+      
+      // Check data change (excluding the first (Rank) column we added)
+      for(let i=0;i<rowData.length;i++){
+        const prevVal=prevRow[i]||"", curVal=rowData[i]||"";
+        if(prevVal!==curVal){ 
+          // Find the corresponding cell in the HTML row to mark it changed
+          // This is complex because we skipped columns, so we just flag the row for animation
+          changed=true; 
+          break;
+        }
+      }
       if(changed) tr.classList.add('updated-cell');
     }
+    
     frag.appendChild(tr);
   });
+  
   tableBody.innerHTML=""; tableBody.appendChild(frag);
+  
+  // Animation logic remains the same
   const newRects={};
   Array.from(tableBody.children).forEach(tr=>{ const key=tr.dataset.key; newRects[key]=tr.getBoundingClientRect(); });
   Object.entries(newRects).forEach(([k,newRect])=>{
@@ -318,6 +383,7 @@ function animateReorderAndRender(newOrderedRows){
 }
 
 function renderPodium(top3){
+  const emojis = ['🥇', '🥈', '🥉'];
   // Note: Pods are ordered: Second, First, Third in the HTML
   const pods=[podium.querySelector('.pod.second'),podium.querySelector('.pod.first'),podium.querySelector('.pod.third')];
   // Data map is indexed: 1st place, 2nd place, 3rd place from the sorted array
@@ -326,17 +392,19 @@ function renderPodium(top3){
   // Render based on the sorted order
   for(let i=0;i<3;i++){
     const pod=pods[i],data=dataMap[i]; if(!pod) continue;
+    const placeEl=pod.querySelector('.place');
     const nameEl=pod.querySelector('.name'), pointsEl=pod.querySelector('.points');
     
     if(data){ 
-      // Use the name property, which is set to rowData[nameIdx]
       let displayName = data.name || '—'; 
       
+      placeEl.textContent = emojis[i];
       nameEl.textContent=displayName; 
       nameEl.classList.remove('muted'); 
       pointsEl.textContent=(data.points!=null?data.points:'0')+' pts'; 
     }
     else{ 
+      placeEl.textContent = emojis[i];
       nameEl.textContent='—'; 
       pointsEl.textContent='0 pts'; 
       nameEl.classList.add('muted'); 
@@ -346,13 +414,13 @@ function renderPodium(top3){
 
 function processAndRender(allRows){
   if(!allRows||allRows.length<1) return;
-  const headers=allRows[0].map(h=>h||'').filter(h => h !== ''); // Filter out empty header cells
+  const originalHeaders=allRows[0].map(h=>h||''); 
   const rawRows=allRows.slice(1).filter(r=>r.some(c=>c.trim()!==""));
   
-  const ptsIdx=detectPointsColumn(headers,rawRows);
+  const ptsIdx=detectPointsColumn(originalHeaders,rawRows);
   
   let nameIdx = -1;
-  const normalizedHeaders = headers.map(h => (h || "").toLowerCase());
+  const normalizedHeaders = originalHeaders.map(h => (h || "").toLowerCase().replace(/[^a-z0-9]/g, ''));
   const nameCandidates = ['name', 'player', 'team', 'id'];
 
   // 1. Find name column by header
@@ -366,33 +434,47 @@ function processAndRender(allRows){
   
   // 2. Fallback: If no clear header or the header is the points column, find the first non-points column
   if (nameIdx === -1 || nameIdx === ptsIdx) {
-    nameIdx = headers.findIndex((_, i) => i !== ptsIdx);
-    if (nameIdx === -1) nameIdx = 0; // Absolute fallback
+    nameIdx = originalHeaders.findIndex((_, i) => i !== ptsIdx);
+    if (nameIdx === -1) nameIdx = 0; 
   }
 
-  // Final check: if name and points are the same column, we have a problem, but stick to the best guess.
-  if (nameIdx === ptsIdx && headers.length > 1) {
-      console.warn("Name and Points column are the same! Defaulting name to column 0.");
-      nameIdx = 0; // Force name to the first column (assuming points are elsewhere)
+  // Final check: if name and points are the same column and more than 1 column exists
+  if (nameIdx === ptsIdx && originalHeaders.length > 1) {
+      nameIdx = 0; 
   }
   
   const rowObjs=rawRows.map(row=>{
     const ptsRaw=(row[ptsIdx]||'').toString().replace(/[^0-9.\-]/g,'').trim();
     const points=ptsRaw===''||isNaN(Number(ptsRaw))?0:Number(ptsRaw);
-    const name=(row[nameIdx]||'').toString(); // Use the determined name index
-    const key=playerKeyFromRow(headers,row, nameIdx, ptsIdx);
+    const name=(row[nameIdx]||'').toString(); 
+    const key=playerKeyFromRow(originalHeaders,row, nameIdx, ptsIdx);
     return { key, name, points, rowData:row };
   });
   
-  rowObjs.sort((a,b)=>{ if(b.points!==a.points) return b.points-a.points; return a.name.localeCompare(b.name); });
-  let rank=0, lastPoints=null;
-  rowObjs.forEach((r,idx)=>{ if(lastPoints===null||r.points!==lastPoints){ rank=idx+1; lastPoints=r.points; } r.rank=rank; });
+  // Sort logic (Points descending, then Name ascending for tie-breaker)
+  rowObjs.sort((a,b)=>{ 
+    if(b.points!==a.points) return b.points-a.points; 
+    return a.name.localeCompare(b.name); 
+  });
   
-  buildHeader(headers);
+  let rank=0, lastPoints=null;
+  rowObjs.forEach((r,idx)=>{ 
+    // Use DENSE RANK logic: players with the same score get the same rank
+    if(lastPoints===null||r.points!==lastPoints){ 
+      rank=idx+1; 
+      lastPoints=r.points; 
+    } 
+    r.rank=rank; 
+  });
+  
+  buildHeader(originalHeaders, ptsIdx);
   const newOrderedRows=rowObjs.map(r=>({ key:r.key,rowData:r.rowData,rank:r.rank }));
-  animateReorderAndRender(newOrderedRows);
+  animateReorderAndRender(newOrderedRows, nameIdx, ptsIdx, originalHeaders);
   renderPodium(rowObjs.slice(0,3).map(r=>({ name:r.name, points:r.points })));
-  previousRowsMap.clear(); rowObjs.forEach(r=>previousRowsMap.set(r.key,r.rowData.slice())); previousOrder=rowObjs.map(r=>r.key);
+  
+  previousRowsMap.clear(); 
+  rowObjs.forEach(r=>previousRowsMap.set(r.key,r.rowData.slice())); 
+  previousOrder=rowObjs.map(r=>r.key);
 }
 
 async function updateLeaderboard(){
