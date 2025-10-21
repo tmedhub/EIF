@@ -1,123 +1,528 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Live Leaderboard</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>EIF Leaderboard</title>
   <style>
-    body {
-      background: linear-gradient(135deg, #001f3f, #0074D9);
-      font-family: 'Poppins', sans-serif;
-      color: white;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 40px;
+    /* Page */
+    :root{
+      --bg1: #ff8a00;
+      --bg2: #ffd24d;
+      --glass: rgba(255,255,255,0.08);
+      --glass-2: rgba(255,255,255,0.12);
+      --accent: rgba(255,255,255,0.95);
+      --update-glow: rgba(0,255,0,0.22);
+    }
+    html,body{height:100%;margin:0;}
+    body{
+      min-height:100%;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:20px;
+      font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      color:var(--accent);
+      padding:28px;
+      background: linear-gradient(135deg, var(--bg1) 0%, var(--bg2) 60%);
+      background-attachment: fixed;
     }
 
-    h1 {
-      font-size: 2.5rem;
-      margin-bottom: 30px;
-      text-transform: uppercase;
-      letter-spacing: 2px;
+    h1{
+      margin:0;
+      font-size:2rem;
+      letter-spacing:2px;
+      text-transform:uppercase;
+      display:flex;
+      align-items:center;
+      gap:12px;
     }
 
-    table {
-      border-collapse: collapse;
+    /* Podium */
+    .podium-wrap{
+      width:90%;
+      max-width:1000px;
+      display:flex;
+      justify-content:center;
+      align-items:flex-end;
+      gap:18px;
+      padding:10px;
+    }
+    .podium{
+      display:flex;
+      gap:16px;
+      align-items:flex-end;
+      width:100%;
+      justify-content:center;
+      max-width:900px;
+      margin-bottom:6px;
+    }
+    .pod{
+      width:180px;
+      min-height:110px;
+      border-radius:12px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0.04));
+      box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:flex-end;
+      padding:12px;
+      position:relative;
+      transform-origin: bottom center;
+      transition: transform 300ms ease;
+    }
+    .pod .place{
+      font-weight:700;
+      font-size:1.2rem;
+      margin-bottom:6px;
+    }
+    .pod .name{
+      font-weight:600;
+      font-size:1rem;
+      white-space:nowrap;
+      text-overflow:ellipsis;
+      overflow:hidden;
+      width:100%;
+      text-align:center;
+    }
+    .pod .points{
+      font-size:0.95rem;
+      margin-top:6px;
+      background: rgba(0,0,0,0.18);
+      padding:6px 8px;
+      border-radius:8px;
+      font-weight:700;
+    }
+    /* podium heights */
+    .pod.first{ height:180px; transform: translateY(-10px) scale(1.04); border: 3px solid rgba(255,255,255,0.14); }
+    .pod.second{ height:150px; transform: translateY(0) scale(1.00); }
+    .pod.third{ height:130px; transform: translateY(6px) scale(.98); }
+
+    /* Table */
+    .table-wrap{
       width: 90%;
-      max-width: 800px;
-      font-size: 1.1rem;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 12px;
+      max-width: 1000px;
+      background: linear-gradient(180deg, rgba(0,0,0,0.12), rgba(0,0,0,0.06));
+      border-radius:14px;
+      padding:10px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    }
+
+    table{
+      width:100%;
+      border-collapse: collapse;
       overflow: hidden;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-      transition: all 0.3s ease;
+      color:var(--accent);
+      table-layout:auto;
     }
 
-    th, td {
-      text-align: center;
-      padding: 15px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    thead th{
+      background: rgba(255,255,255,0.06);
+      padding:12px 10px;
+      text-transform:uppercase;
+      font-size:0.85rem;
+      letter-spacing:1px;
+      text-align:center;
+      border-bottom:1px solid rgba(255,255,255,0.06);
     }
 
-    th {
-      background: rgba(255, 255, 255, 0.2);
-      font-weight: bold;
+    tbody td{
+      padding:12px 10px;
+      text-align:center;
+      border-bottom:1px dashed rgba(255,255,255,0.04);
+      font-size:0.95rem;
+      vertical-align:middle;
     }
 
-    tr:hover {
-      background: rgba(255, 255, 255, 0.15);
-      transform: scale(1.02);
-      transition: all 0.2s ease-in-out;
+    tbody tr{
+      transition: transform 500ms ease, background-color 220ms ease;
+      will-change: transform;
     }
 
-    .updated {
-      animation: glow 1s ease-in-out;
+    tbody tr.updated-cell td.changed {
+      animation: cell-glow 1.2s ease;
     }
 
-    @keyframes glow {
-      from { background-color: rgba(0,255,0,0.3); }
-      to { background-color: transparent; }
+    @keyframes cell-glow {
+      0% { background-color: var(--update-glow); }
+      100% { background-color: transparent; }
     }
+
+    /* FLIP move highlight when ranks change */
+    .moving {
+      box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+      border-radius:8px;
+      background: rgba(255,255,255,0.02);
+    }
+
+    /* small devices */
+    @media (max-width:760px){
+      .pod{ width:120px; min-height:90px; }
+      .pod.first{height:140px;}
+      .pod.second{height:120px;}
+      .pod.third{height:110px;}
+      h1{font-size:1.2rem;}
+    }
+
+    /* utility */
+    .muted{opacity:0.9;font-weight:600;font-size:0.9rem;}
   </style>
 </head>
 <body>
-  <h1>🏁 Live Leaderboard 🏁</h1>
-  <table id="leaderboard">
-    <thead></thead>
-    <tbody></tbody>
-  </table>
+  <h1>🏁 EIF Leaderboard</h1>
+
+  <div class="podium-wrap">
+    <div class="podium" id="podium">
+      <!-- pods inserted by JS -->
+      <div class="pod first" data-place="1"><div class="place">1</div><div class="name muted">—</div><div class="points">0</div></div>
+      <div class="pod second" data-place="2"><div class="place">2</div><div class="name muted">—</div><div class="points">0</div></div>
+      <div class="pod third" data-place="3"><div class="place">3</div><div class="name muted">—</div><div class="points">0</div></div>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <table id="leaderboard" aria-label="Leaderboard">
+      <thead></thead>
+      <tbody></tbody>
+    </table>
+  </div>
 
   <script>
+    /* === CONFIG ===
+       Put your published CSV URL here (published CSV from Google Sheets)
+       Example: https://docs.google.com/spreadsheets/d/e/<<ID>>/pub?gid=0&single=true&output=csv
+    */
     const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTQi-z2SLLIg21-uohF1NG58lzZZuPZ6V_wGuQ_g-PTmjvRHcUR3e6PPg4K80i7_Qia_YZkDIJS2eCL/pub?gid=0&single=true&output=csv";
+
     const tableHead = document.querySelector("#leaderboard thead");
     const tableBody = document.querySelector("#leaderboard tbody");
-    let previousData = [];
+    const podium = document.getElementById("podium");
 
-    async function fetchSheetData() {
-      const response = await fetch(SHEET_URL);
-      const csvText = await response.text();
-      const rows = csvText.trim().split("\n").map(r => r.split(","));
-      return rows;
+    // store previous state for change detection and FLIP
+    let previousRowsMap = new Map(); // key: unique id (player), value: rowData array
+    let previousOrder = []; // array of player ids in order
+
+    const POLL_MS = 15000; // 15 seconds - change if you'd like
+
+    /* -- utility: robust CSV parser (handles quoted fields & commas) -- */
+    function parseCSV(text){
+      const rows = [];
+      let cur = "";
+      let row = [];
+      let inQuotes = false;
+      for (let i = 0; i < text.length; i++){
+        const ch = text[i];
+        const next = text[i+1];
+        if (ch === '"' ){
+          if (inQuotes && next === '"'){
+            cur += '"'; // escaped quote
+            i++;
+          } else {
+            inQuotes = !inQuotes;
+          }
+        } else if (ch === ',' && !inQuotes){
+          row.push(cur);
+          cur = "";
+        } else if ((ch === '\n' || (ch === '\r' && text[i+1] === '\n')) && !inQuotes){
+          // push row
+          // handle CRLF
+          if (ch === '\r' && text[i+1] === '\n') { /* skip extra */ }
+          row.push(cur);
+          rows.push(row.map(c => c.trim()));
+          row = [];
+          cur = "";
+        } else {
+          cur += ch;
+        }
+      }
+      if (cur !== "" || row.length > 0){
+        row.push(cur);
+        rows.push(row.map(c => c.trim()));
+      }
+      // remove empty trailing lines
+      return rows.filter(r => r.length > 0 && r.some(cell => cell !== ""));
     }
 
-    function renderTable(data) {
-      const [headers, ...rows] = data;
-      tableHead.innerHTML = "<tr>" + headers.map(h => `<th>${h}</th>`).join("") + "</tr>";
+    /* -- auto-detect points column index --
+       Looks for headers 'total', 'points', 'score' (case-insensitive).
+       If none found, it picks the last column that contains numeric value on first data row.
+    */
+    function detectPointsColumn(headers, rows){
+      const normalized = headers.map(h => (h||"").toString().toLowerCase());
+      const candidates = ['total','points','score','pts','score'];
+      for (let c of candidates){
+        const idx = normalized.indexOf(c);
+        if (idx !== -1) return idx;
+      }
+      // fallback: find last numeric column
+      if (rows.length > 0){
+        const firstRow = rows[0];
+        for (let i = firstRow.length - 1; i >= 0; i--){
+          const v = firstRow[i].replace(/[^0-9.\-]/g,"");
+          if (v !== "" && !isNaN(Number(v))) return i;
+        }
+      }
+      return headers.length - 1; // final fallback
+    }
 
-      const oldRows = {};
-      Array.from(tableBody.querySelectorAll("tr")).forEach(tr => {
-        const cells = tr.querySelectorAll("td");
-        if (cells.length > 0) oldRows[cells[1].textContent] = tr;
+    /* -- CSV fetch with cache busting to ensure fresh values -- */
+    async function fetchSheetCSV(){
+      const url = SHEET_URL + (SHEET_URL.includes('?') ? '&' : '?') + '_=' + Date.now();
+      const resp = await fetch(url, {cache: "no-store"});
+      if (!resp.ok) throw new Error("Failed to fetch sheet: " + resp.status);
+      const text = await resp.text();
+      return parseCSV(text);
+    }
+
+    /* -- Create table header with Rank column first -- */
+    function buildHeader(headers){
+      const tr = document.createElement('tr');
+      // Rank added
+      const rankTh = document.createElement('th');
+      rankTh.textContent = 'Rank';
+      tr.appendChild(rankTh);
+      headers.forEach(h => {
+        const th = document.createElement('th');
+        th.textContent = h || '-';
+        tr.appendChild(th);
+      });
+      tableHead.innerHTML = "";
+      tableHead.appendChild(tr);
+    }
+
+    /* -- Utility to get unique player id from row:
+       Prefer header 'id' or 'player' or 'name' else use combination of columns.
+    */
+    function playerKeyFromRow(headers, row){
+      const normalized = headers.map(h => (h||"").toString().toLowerCase());
+      const nameIdxCandidates = ['id','player','name','team'];
+      for (let c of nameIdxCandidates){
+        const idx = normalized.indexOf(c);
+        if (idx !== -1 && row[idx]) return row[idx];
+      }
+      // fallback: use second column if exists, else JSON stringify
+      if (row.length >= 2 && row[1]) return row[1];
+      return JSON.stringify(row);
+    }
+
+    /* -- FLIP animation for reordering rows --
+       We'll record old positions of existing DOM rows, change DOM to new order,
+       then apply transforms to animate from old to new.
+    */
+    function animateReorderAndRender(newOrderedRows, headers){
+      // Map old elements by key
+      const oldElements = {};
+      Array.from(tableBody.children).forEach(tr => {
+        const key = tr.dataset.key;
+        if (key) oldElements[key] = tr;
       });
 
-      tableBody.innerHTML = "";
+      // Measure old positions
+      const oldRects = {};
+      Object.entries(oldElements).forEach(([k, el]) => {
+        oldRects[k] = el.getBoundingClientRect();
+      });
 
-      rows.forEach(row => {
-        const playerName = row[1];
-        const tr = document.createElement("tr");
-        row.forEach(cell => {
-          const td = document.createElement("td");
-          td.textContent = cell;
+      // Build new rows DOM but don't append yet
+      const frag = document.createDocumentFragment();
+      newOrderedRows.forEach(item => {
+        const {key, rowData} = item;
+        let tr = oldElements[key];
+        const isExisting = !!tr;
+        if (!tr){
+          tr = document.createElement('tr');
+          tr.dataset.key = key;
+        }
+        // clear & rebuild cells
+        tr.innerHTML = "";
+        // Rank cell
+        const rankTd = document.createElement('td');
+        rankTd.textContent = item.rank;
+        tr.appendChild(rankTd);
+
+        rowData.forEach(cellVal => {
+          const td = document.createElement('td');
+          td.textContent = cellVal;
           tr.appendChild(td);
         });
 
-        if (oldRows[playerName]) {
-          const oldRow = Array.from(oldRows[playerName].querySelectorAll("td")).map(td => td.textContent);
-          if (JSON.stringify(oldRow) !== JSON.stringify(row)) tr.classList.add("updated");
+        // mark changed cells vs previousRowsMap
+        const prevRow = previousRowsMap.get(key) || [];
+        let changed = false;
+        if (prevRow.length){
+          // iterate each column and add .changed to td where different
+          const tds = tr.querySelectorAll('td');
+          // skip first cell (rank)
+          for (let i=1;i<tds.length;i++){
+            const prevVal = prevRow[i-1] || "";
+            const curVal = rowData[i-1] || "";
+            if (prevVal !== curVal){
+              tds[i].classList.add('changed');
+              changed = true;
+            }
+          }
+          if (changed) tr.classList.add('updated-cell');
         }
 
-        tableBody.appendChild(tr);
+        frag.appendChild(tr);
       });
+
+      // Replace table body with new fragment
+      // Before we do that, measure new positions after appending to a hidden container? Simpler approach:
+      // Append, then apply FLIP transform by comparing oldRects -> newRects.
+      tableBody.innerHTML = "";
+      tableBody.appendChild(frag);
+
+      // Measure new rects
+      const newRects = {};
+      Array.from(tableBody.children).forEach(tr => {
+        const key = tr.dataset.key;
+        newRects[key] = tr.getBoundingClientRect();
+      });
+
+      // Apply FLIP transforms
+      Object.entries(newRects).forEach(([k, newRect]) => {
+        const el = tableBody.querySelector(`tr[data-key='${CSS.escape(k)}']`);
+        const oldRect = oldRects[k];
+        if (oldRect){
+          const dy = oldRect.top - newRect.top;
+          if (dy !== 0){
+            el.style.transform = `translateY(${dy}px)`;
+            el.classList.add('moving');
+            // force reflow
+            el.getBoundingClientRect();
+            // animate to final
+            requestAnimationFrame(() => {
+              el.style.transition = 'transform 500ms cubic-bezier(.2,.8,.2,1)';
+              el.style.transform = '';
+              // remove moving class once transition ends
+              el.addEventListener('transitionend', function onEnd(e){
+                if (e.propertyName === 'transform'){
+                  el.classList.remove('moving');
+                  el.style.transition = '';
+                  el.removeEventListener('transitionend', onEnd);
+                }
+              });
+            });
+          }
+        }
+      });
+
+      // cleanup: remove changed classes after animation
+      setTimeout(()=> {
+        Array.from(tableBody.querySelectorAll('tr.updated-cell')).forEach(tr=>{
+          tr.classList.remove('updated-cell');
+          tr.querySelectorAll('td.changed').forEach(td=> td.classList.remove('changed'));
+        });
+      }, 1400);
     }
 
-    async function updateLeaderboard() {
-      const data = await fetchSheetData();
-      renderTable(data);
+    /* -- Render podium top 3 -- */
+    function renderPodium(top3){
+      const pods = podium.querySelectorAll('.pod');
+      for (let i=0;i<3;i++){
+        const pod = pods[i];
+        if (!pod) continue;
+        const place = i+1;
+        const data = top3[i];
+        const nameEl = pod.querySelector('.name');
+        const pointsEl = pod.querySelector('.points');
+        if (data){
+          nameEl.textContent = data.name || '—';
+          nameEl.classList.remove('muted');
+          pointsEl.textContent = (data.points != null ? data.points : '0') + ' pts';
+        } else {
+          nameEl.textContent = '—';
+          pointsEl.textContent = '0 pts';
+          nameEl.classList.add('muted');
+        }
+      }
     }
 
+    /* -- Main render function: sorts, sets ranks, updates table & podium -- */
+    function processAndRender(allRows){
+      if (!allRows || allRows.length < 1) return;
+      const headers = allRows[0].map(h => h || '');
+      const rawRows = allRows.slice(1);
+
+      // detect points column
+      const ptsIdx = detectPointsColumn(headers, rawRows);
+      const nameIdx = (() => {
+        const normalized = headers.map(h => (h||"").toLowerCase());
+        const candidates = ['name','player','team','id'];
+        for (let c of candidates){
+          const idx = normalized.indexOf(c);
+          if (idx !== -1) return idx;
+        }
+        return Math.min(1, headers.length-1);
+      })();
+
+      // convert rows to objects & numeric points
+      const rowObjs = rawRows.map(row => {
+        const ptsRaw = (row[ptsIdx] || '').toString().replace(/[^0-9.\-]/g,'').trim();
+        const points = ptsRaw === '' || isNaN(Number(ptsRaw)) ? 0 : Number(ptsRaw);
+        const name = (row[nameIdx] || '').toString();
+        const key = playerKeyFromRow(headers, row);
+        return { key, name, points, rowData: row };
+      });
+
+      // sort descending by points
+      rowObjs.sort((a,b) => {
+        if (b.points !== a.points) return b.points - a.points;
+        // if tie, keep stable by name
+        return a.name.localeCompare(b.name);
+      });
+
+      // assign ranks (dense rank)
+      let rank = 0;
+      let lastPoints = null;
+      rowObjs.forEach((r, idx) => {
+        if (lastPoints === null || r.points !== lastPoints){
+          rank = idx + 1;
+          lastPoints = r.points;
+        }
+        r.rank = rank;
+      });
+
+      // Build header (only once or when headers change)
+      buildHeader(headers);
+
+      // Build newOrderedRows that we'll render with FLIP
+      const newOrderedRows = rowObjs.map(r => ({ key: r.key, rowData: r.rowData, rank: r.rank }));
+
+      animateReorderAndRender(newOrderedRows, headers);
+
+      // Render podium top3
+      renderPodium(rowObjs.slice(0,3).map(r => ({ name: r.name, points: r.points })));
+
+      // Update previousRowsMap & previousOrder for next diff
+      previousRowsMap.clear();
+      rowObjs.forEach(r => previousRowsMap.set(r.key, r.rowData.slice()));
+      previousOrder = rowObjs.map(r => r.key);
+    }
+
+    /* -- top-level update function -- */
+    async function updateLeaderboard(){
+      try {
+        const csv = await fetchSheetCSV();
+        // small guard: if csv empty or only header, render header and empty body
+        if (!csv || csv.length === 0){
+          tableHead.innerHTML = "<tr><th>No data</th></tr>";
+          tableBody.innerHTML = "";
+          return;
+        }
+        processAndRender(csv);
+      } catch (err){
+        console.error("Failed to update leaderboard:", err);
+      }
+    }
+
+    // initial load
     updateLeaderboard();
-    setInterval(updateLeaderboard, 15000); // refresh every 15 seconds
+
+    // poller
+    setInterval(updateLeaderboard, POLL_MS);
   </script>
 </body>
 </html>
