@@ -259,7 +259,9 @@ const podium = document.getElementById("podium");
 let previousRowsMap = new Map(); // Stores the full row data for content comparison
 let previousRanks = new Map();  // Stores rank by key for rank change comparison
 let previousOrder = [];         // Stores player keys in rank order
-const POLL_MS = 20000; // Still needed to check the sheet every 20s
+
+// *** CHANGED: Reduced polling interval from 20000ms (20s) to 5000ms (5s) ***
+const POLL_MS = 5000; 
 
 /**
  * Parses CSV text data into an array of arrays (rows and columns).
@@ -361,7 +363,7 @@ function playerKeyFromRow(headers, row, nameIdx, ptsIdx){
 
 /**
  * Fetches the CSV data from the Google Sheet URL.
- * ***FIXED: Added aggressive Cache-Control headers to prevent reverting to old data.***
+ * Added aggressive Cache-Control headers to prevent reverting to old data.
  */
 async function fetchSheetCSV(){
   const url=SHEET_URL+(SHEET_URL.includes('?')?'&':'?')+'_='+Date.now();
