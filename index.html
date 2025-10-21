@@ -172,7 +172,7 @@
   </style>
 </head>
 <body>
-    <h1>🏁 EIF Leaderboard</h1> 
+    <h1>EIF Leaderboard</h1> 
 
   <div class="podium-wrap">
     <div class="podium" id="podium">
@@ -190,7 +190,7 @@
   </div>
 
   <script>
-    /*        === CONFIG ===
+    /*        === CONFIG ===
        This is the **working** public CSV URL you provided.
     */
     const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTQi-z2SLLIg21-uohF1NG58lzZZuPZ6V_wGuQ_g-PTmjvRHcUR3e6PPg4K80i7_Qia_YZkDIJS2eCL/pub?gid=0&single=true&output=csv";
@@ -315,14 +315,14 @@
       newOrderedRows.forEach(item => {
         const {key, rowData} = item;
         let tr = oldElements[key];
-        
+        
         if (!tr){
           tr = document.createElement('tr');
           tr.dataset.key = key;
         } else {
           tr.classList.remove('updated-cell');
         }
-        
+        
         tr.innerHTML = "";
         // Rank cell
         const rankTd = document.createElement('td');
@@ -380,7 +380,7 @@
             el.style.transform = `translateY(${dy}px)`;
             el.classList.add('moving');
             el.getBoundingClientRect(); // force reflow
-            
+            
             requestAnimationFrame(() => {
               el.style.transition = 'transform 500ms cubic-bezier(.2,.8,.2,1)';
               el.style.transform = '';
@@ -413,7 +413,7 @@
         podium.querySelector('.pod.first'),
         podium.querySelector('.pod.third')
       ];
-      
+      
       // Data mapping: top3[0] -> 1st place, top3[1] -> 2nd place, top3[2] -> 3rd place
       const dataMap = [
         top3[1], // Data for 2nd place pod
@@ -428,7 +428,7 @@
 
         const nameEl = pod.querySelector('.name');
         const pointsEl = pod.querySelector('.points');
-        
+        
         if (data){
           nameEl.textContent = data.name || '—';
           nameEl.classList.remove('muted');
