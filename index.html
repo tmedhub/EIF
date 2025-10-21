@@ -7,21 +7,16 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
   :root{
-    /* Original Gradient Colors */
-    --bg1: #ff8a00; /* Deep Orange */
-    --bg2: #ffd24d; /* Golden Yellow */
-    
-    /* New Aesthetic Enhancements */
-    --accent: #1e1e1e; /* Darker text for contrast */
+    --bg1: #ff8a00; 
+    --bg2: #ffd24d; 
+    --accent: #1e1e1e; 
     --table-shadow: rgba(0,0,0,0.15);
-    --update-glow: #e6ffec; /* Light green background for flash */
-    --moving-color: #008000; /* Darker green for moving row text/border */
-    
-    /* Podium Colors */
-    --gold: #FFC72C; /* Brighter Gold */
-    --silver: #A9B3B9; /* Cleaner Silver */
-    --bronze: #8B4513; /* Earthy Bronze */
-    --pod-bg: #ffffff; /* Clean White for Podium Cards */
+    --update-glow: #e6ffec; 
+    --moving-color: #008000; 
+    --gold: #FFC72C; 
+    --silver: #A9B3B9; 
+    --bronze: #8B4513; 
+    --pod-bg: #ffffff; 
   }
   html,body{height:100%;margin:0;}
   body{
@@ -29,18 +24,16 @@
     display:flex;
     flex-direction:column;
     align-items:center;
-    gap:30px; /* Increased gap from 20px */
+    gap:30px;
     font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
     color:white; 
-    padding:30px 20px;
+    padding:40px 20px 30px;
     background: linear-gradient(135deg, var(--bg1) 0%, var(--bg2) 60%);
     background-attachment: fixed;
   }
-  
-  /* --- REVAMPED HEADING (BIGGER) --- */
   h1{
     margin:0;
-    font-size: 4.5rem; /* Significantly increased font size */
+    font-size: 4rem;
     font-weight: 900; 
     letter-spacing:3px;
     text-transform:uppercase;
@@ -48,11 +41,9 @@
     align-items:center;
     gap:12px;
     color: #fff; 
-    text-shadow: 0 6px 12px rgba(0,0,0,0.5); /* Deeper, cleaner shadow */
+    text-shadow: 0 6px 12px rgba(0,0,0,0.5);
     line-height: 1;
   }
-  
-  /* --- REVAMPED PODIUM STYLING --- */
   .podium-wrap{
     width:95%;
     max-width:1000px;
@@ -61,7 +52,8 @@
     align-items:flex-end;
     gap:18px;
     padding:10px;
-    margin-bottom: 20px;
+    margin-top:30px;
+    margin-bottom:40px;
   }
   .podium{
     display:flex;
@@ -82,26 +74,22 @@
     flex-direction:column;
     align-items:center;
     justify-content:flex-end;
-    padding: 24px 16px 16px; /* Increased padding and space for badge */
+    padding: 24px 16px 16px;
     position:relative;
     transform-origin: bottom center;
     transition: transform 300ms ease;
     border: 3px solid transparent;
   }
-
-  /* Specific Pod Tiers - Define height/scale for visual hierarchy */
   .pod.first{ transform: translateY(-16px) scale(1.05); } 
   .pod.second{ transform: translateY(0) scale(1.0); } 
   .pod.third{ transform: translateY(8px) scale(0.95); } 
-  
-  /* The Floating Rank Badge */
   .pod .place{
     position: absolute;
-    top: -20px; /* Position above the card */
+    top: -20px;
     left: 50%;
     transform: translateX(-50%);
     font-weight: 900; 
-    font-size: 2.2rem; /* Bigger rank badge */
+    font-size: 2.2rem;
     line-height: 1.2;
     padding: 6px 14px;
     border-radius: 10px;
@@ -109,17 +97,13 @@
     border: 3px solid;
     z-index: 20;
   }
-  
-  /* Badge Colors */
   .pod.first .place { background: var(--gold); color: #333; border-color: #fff; }
   .pod.second .place { background: var(--silver); color: #333; border-color: #fff; }
   .pod.third .place { background: var(--bronze); color: white; border-color: #fff; }
-
-  /* Ensure Full Name Display (allows wrapping, prevents ellipsis) */
   .pod .name{
     font-weight: 800; 
     font-size: 1.1rem; 
-    white-space: normal; /* Allows wrapping */
+    white-space: normal; 
     text-overflow: clip; 
     overflow: visible;
     width:100%;
@@ -128,18 +112,13 @@
     margin-top: 8px;
     line-height: 1.2;
   }
-  
-  /* Points: Lighter weight and no background block */
   .pod .points{
     font-size:1.1rem; 
     margin-top: 10px;
-    padding: 0;
     background: transparent;
-    font-weight: 600; /* Medium weight */
+    font-weight: 600;
     color: #444; 
   }
-  
-  /* --- TABLE STYLING: INCREASED GAP (same as last request) --- */
   .table-wrap{
     width: 95%;
     max-width: 1000px;
@@ -152,8 +131,7 @@
   table{
     width:100%;
     border-collapse: separate; 
-    border-spacing: 0 14px;    /* Increased vertical space to 14px */
-    overflow: hidden;
+    border-spacing: 0 14px;
     color:var(--accent); 
     table-layout: auto; 
     padding-top: 50px; 
@@ -193,25 +171,19 @@
     vertical-align:middle;
     font-weight: 500;
   }
-  /* Round the corners of the individual rows */
   tbody td:first-child { border-top-left-radius: 8px; border-bottom-left-radius: 8px; }
   tbody td:last-child { border-top-right-radius: 8px; border-bottom-right-radius: 8px; }
-
-  /* Green flash for any change (data or rank) */
   tbody tr.updated-cell {
     background-color: var(--update-glow) !important; 
   }
-
-  /* Movement and high Z-index for rank changes (sliding row) */
   tbody tr.moving {
     box-shadow: 0 12px 30px rgba(0, 150, 0, 0.4);
-    background-color: #8cffb3 !important; /* Bright green while moving */
+    background-color: #8cffb3 !important;
     color: var(--moving-color);
     font-weight: 700; 
     z-index: 5; 
     border: 1px solid var(--moving-color);
   }
-
   @media (max-width:760px){
     h1{font-size:2.5rem; letter-spacing:1px;}
     .pod{ width:100px; min-height:100px; padding: 18px 10px 10px; }
@@ -230,11 +202,8 @@
 
 <div class="podium-wrap">
   <div class="podium" id="podium">
-    <!-- 2nd Place -->
     <div class="pod second" data-place="2"><div class="place">2nd 🥈</div><div class="name muted">—</div><div class="points">0 pts</div></div>
-    <!-- 1st Place -->
     <div class="pod first" data-place="1"><div class="place">1st 🥇</div><div class="name muted">—</div><div class="points">0 pts</div></div>
-    <!-- 3rd Place -->
     <div class="pod third" data-place="3"><div class="place">3rd 🥉</div><div class="name muted">—</div><div class="points">0 pts</div></div>
   </div>
 </div>
@@ -247,361 +216,150 @@
 </div>
 
 <script>
-// IMPORTANT: Use your correct public Google Sheet URL here
 const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTQi-z2SLLIg21-uohF1NG58lzZZuPZ6V_wGuQ_g-PTmjvRHcUR3e6PPg4K80i7_Qia_YZkDIJS2eCL/pub?gid=0&single=true&output=csv";
 
 const tableHead = document.querySelector("#leaderboard thead");
 const tableBody = document.querySelector("#leaderboard tbody");
 const podium = document.getElementById("podium");
-let previousRowsMap = new Map();
-let previousOrder = [];
-const POLL_MS = 20000; // Poll every 20 seconds for real-time updates
+let previousData = [];
 
-/**
- * Parses CSV text data into an array of arrays (rows and columns).
- */
+// --- CSV parsing ---
 function parseCSV(text){
-  const rows = [];
+  const rows=[];
   let cur="", row=[], inQuotes=false;
-  for (let i=0;i<text.length;i++){
+  for(let i=0;i<text.length;i++){
     const ch=text[i], next=text[i+1];
     if(ch==='"'){
-      if(inQuotes && next==='"'){ cur+='"'; i++; } else { inQuotes=!inQuotes; }
+      if(inQuotes && next==='"'){ cur+='"'; i++; } else inQuotes=!inQuotes;
     } else if(ch===',' && !inQuotes){ row.push(cur); cur=""; }
     else if((ch==='\n'||(ch==='\r'&&text[i+1]==='\n')) && !inQuotes){
       if(ch==='\r'&&text[i+1]==='\n'){ i++; }
       row.push(cur); rows.push(row.map(c=>c.trim())); row=[]; cur="";
-    } else { cur+=ch; }
+    } else cur+=ch;
   }
   if(cur!==""||row.length>0){ row.push(cur); rows.push(row.map(c=>c.trim())); }
   return rows.filter(r=>r.length>0 && r.some(c=>c!==""));
 }
 
-/**
- * Attempts to automatically identify the column containing the scores/points.
- */
+// --- Detect points column ---
 function detectPointsColumn(headers, rows){
   const normalized = headers.map(h=>(h||"").toLowerCase().replace(/[^a-z0-9]/g, ''));
   const candidates = ['total','points','score','pts'];
-  // 1. Check for header keywords
   for(let c of candidates){
     const idx = normalized.indexOf(c);
     if(idx!==-1) return idx;
   }
-  // 2. Fallback: Check for the last column that looks like numbers
-  if(rows.length > 0) {
-    for (let i = headers.length - 1; i >= 0; i--) {
-        let numberCount = 0;
-        rows.forEach(row => {
-            const v = (row[i] || '').toString().replace(/[^0-9.\-]/g, '').trim();
-            if (v !== '' && !isNaN(Number(v))) {
-                numberCount++;
-            }
-        });
-        if (numberCount / rows.length > 0.5) { return i; }
+  if(rows.length > 0){
+    for(let i=headers.length-1;i>=0;i--){
+      let numberCount=0;
+      rows.forEach(row=>{ const v=(row[i]||'').replace(/[^0-9.\-]/g,''); if(v!==''&&!isNaN(Number(v))) numberCount++; });
+      if(numberCount/rows.length>0.5) return i;
     }
   }
-  return headers.length > 0 ? headers.length - 1 : 0;
+  return headers.length>0?headers.length-1:0;
 }
 
-/**
- * Fetches the CSV data from the Google Sheet URL.
- */
+// --- Fetch CSV ---
 async function fetchSheetCSV(){
-  // Add a cache-buster to the URL to ensure fresh data
   const url=SHEET_URL+(SHEET_URL.includes('?')?'&':'?')+'_='+Date.now();
   const resp=await fetch(url,{cache:"no-store"});
   if(!resp.ok) throw new Error("Failed to fetch sheet: "+resp.status);
   return parseCSV(await resp.text());
 }
 
-/**
- * Builds the table header row.
- */
+// --- Build header ---
 function buildHeader(headers, ptsIdx){
   const tr=document.createElement('tr');
   const rankTh=document.createElement('th'); rankTh.textContent='Rank'; tr.appendChild(rankTh);
-  
-  headers.forEach((h, i) => { 
-    const normalizedH = (h||'').toLowerCase().replace(/[^a-z0-9]/g, '');
-    if (i !== ptsIdx && normalizedH !== 'rank' && normalizedH !== 'no') {
-      const th=document.createElement('th'); 
-      th.textContent=h||'—'; 
-      tr.appendChild(th); 
-    }
+  headers.forEach((h,i)=>{
+    const norm=(h||'').toLowerCase().replace(/[^a-z0-9]/g,'');
+    if(i!==ptsIdx && norm!=='rank' && norm!=='no'){ const th=document.createElement('th'); th.textContent=h||'—'; tr.appendChild(th); }
   });
-  
-  const ptsHeader = headers[ptsIdx] || 'Points';
-  const ptsTh=document.createElement('th'); 
-  ptsTh.textContent = ptsHeader;
-  tr.appendChild(ptsTh);
-  
-  tableHead.innerHTML=""; 
-  tableHead.appendChild(tr);
+  const ptsTh=document.createElement('th'); ptsTh.textContent=headers[ptsIdx]||'Points'; tr.appendChild(ptsTh);
+  tableHead.innerHTML=""; tableHead.appendChild(tr);
 }
 
-/**
- * Generates a unique key for a player/row based on its content for tracking changes.
- */
-function playerKeyFromRow(headers, row, nameIdx, ptsIdx){
-  const normalized = headers.map(h=>(h||"").toLowerCase().replace(/[^a-z0-9]/g, ''));
-  const candidates = ['id','player','name','team'];
-  
-  // Try to find a specific key column first
-  for(let c of candidates){
-    const idx=normalized.indexOf(c); 
-    if(idx!==-1 && row[idx]) return row[idx];
-  }
-  
-  // Fallback to the determined name column
-  if(nameIdx !== -1 && row[nameIdx] && nameIdx !== ptsIdx) return row[nameIdx];
-  
-  // Last fallback: Use the very first non-empty cell that isn't the points column
-  for(let i = 0; i < row.length; i++) {
-      if (i !== ptsIdx && row[i] && row[i].trim() !== '') {
-          return row[i];
-      }
-  }
-
-  return JSON.stringify(row);
-}
-
-/**
- * Compares old and new row positions and animates the reordering.
- * Animation is strictly tied to rank change AND position change (dy !== 0).
- */
-function animateReorderAndRender(newOrderedRows, nameIdx, ptsIdx, originalHeaders){
-  const oldElements={};
-  Array.from(tableBody.children).forEach(tr=>{ const key=tr.dataset.key; if(key) oldElements[key]=tr; });
-  const oldRects={};
-  Object.entries(oldElements).forEach(([k,el])=>{ oldRects[k]=el.getBoundingClientRect(); });
+// --- Render table ---
+function renderTable(rowObjs, headers, ptsIdx){
+  buildHeader(headers, ptsIdx);
   const frag=document.createDocumentFragment();
-
-  newOrderedRows.forEach(item=>{
-    const {key,rowData}=item;
-    let tr=oldElements[key];
+  rowObjs.forEach(r=>{
+    let tr=document.createElement('tr');
+    tr.dataset.key=r.key;
+    if(r.rankChange) tr.classList.add('moving', 'updated-cell');
+    else if(r.scoreChange) tr.classList.add('updated-cell');
     
-    // 1. Create/Re-use Row Element
-    if(!tr){ 
-      tr=document.createElement('tr'); 
-      tr.dataset.key=key; 
-      tr.classList.add('updated-cell');
-    } else { 
-      tr.classList.remove('updated-cell', 'moving'); 
-    }
-    
-    tr.innerHTML="";
-    
-    // A. Add Rank
-    const rankTd=document.createElement('td'); 
-    rankTd.textContent=item.rank; 
-    tr.appendChild(rankTd);
-    
-    // B. Add Data Columns (excluding points, rank/no columns)
-    const dataCells = [];
-    rowData.forEach((cellVal, i) => {
-      if (i !== ptsIdx) {
-        const normalizedH = (originalHeaders[i]||'').toLowerCase().replace(/[^a-z0-9]/g, '');
-        if (normalizedH !== 'rank' && normalizedH !== 'no') {
-            const td=document.createElement('td'); 
-            td.textContent=cellVal; 
-            dataCells.push(td);
-        }
+    const rankTd=document.createElement('td'); rankTd.textContent=r.rank; tr.appendChild(rankTd);
+    r.rowData.forEach((val,i)=>{
+      if(i!==ptsIdx){
+        const norm=(headers[i]||'').toLowerCase().replace(/[^a-z0-9]/g,'');
+        if(norm!=='rank' && norm!=='no'){ const td=document.createElement('td'); td.textContent=val; tr.appendChild(td); }
       }
     });
-    dataCells.forEach(td => tr.appendChild(td));
-    
-    // C. Add Points (last column)
-    const ptsTd = document.createElement('td');
-    ptsTd.textContent = rowData[ptsIdx] || '0';
-    tr.appendChild(ptsTd);
-
-    // D. Check for Data Updates (score or any cell content change)
-    const prevRowData = previousRowsMap.get(key)||[];
-    if(prevRowData.length){
-        let dataChanged = false;
-        for(let i=0;i<rowData.length;i++){
-            const prevVal = prevRowData[i] || "", curVal = rowData[i] || "";
-            if(prevVal !== curVal){ 
-                dataChanged = true; 
-                break;
-            }
-        }
-        if(dataChanged) tr.classList.add('updated-cell');
-    }
-    
+    const ptsTd=document.createElement('td'); ptsTd.textContent=r.points; tr.appendChild(ptsTd);
     frag.appendChild(tr);
+    
+    if(r.rankChange){
+      setTimeout(()=>tr.classList.remove('moving','updated-cell'),500);
+    } else if(r.scoreChange){
+      setTimeout(()=>tr.classList.remove('updated-cell'),3000);
+    }
   });
-  
   tableBody.innerHTML=""; tableBody.appendChild(frag);
-  
-  // E. Calculate Position Changes and Run Animation
-  const newRects={};
-  Array.from(tableBody.children).forEach(tr=>{ 
-    const key=tr.dataset.key; 
-    newRects[key]=tr.getBoundingClientRect(); 
-  });
-
-  Object.entries(newRects).forEach(([k,newRect])=>{
-    const el=tableBody.querySelector(`tr[data-key='${CSS.escape(k)}']`);
-    const oldRect=oldRects[k];
-    if(!el) return;
-
-    // Determine if position changed (if old position exists)
-    const dy = oldRect ? oldRect.top - newRect.top : 0;
-    
-    // Check if rank actually changed (using previousOrder, which stores ranks by key)
-    const prevRank = previousOrder.indexOf(k) + 1;
-    const currentRank = parseInt(el.querySelector('td:first-child').textContent) || 0;
-    
-    // Animate ONLY if position changed AND the player's rank number is different
-    const rankMoved = (dy !== 0 && prevRank !== currentRank && prevRank > 0 && currentRank > 0);
-
-    if(rankMoved){
-        // Ensure it has the base green highlight and the moving styles
-        el.classList.add('moving', 'updated-cell'); 
-        
-        // Apply initial transform to old position
-        el.style.transform=`translateY(${dy}px)`; 
-        el.getBoundingClientRect(); // Forces reflow
-        
-        // Start animation to new position
-        requestAnimationFrame(()=>{
-            el.style.transition='transform 500ms cubic-bezier(.2,.8,.2,1)';
-            el.style.transform='';
-            el.addEventListener('transitionend',function onEnd(e){
-                if(e.propertyName==='transform'){ 
-                    el.classList.remove('moving'); 
-                    el.style.transition=''; 
-                    el.removeEventListener('transitionend',onEnd); 
-                    // Keep green flash briefly after animation
-                    setTimeout(() => el.classList.remove('updated-cell'), 500); 
-                }
-            });
-        });
-    } else {
-        // If data changed but rank/position didn't move, just keep the flash and remove it later.
-        if (el.classList.contains('updated-cell')) {
-            setTimeout(() => el.classList.remove('updated-cell'), 1400); 
-        }
-        el.classList.remove('moving'); // Safety cleanup
-    }
-  });
 }
 
-/**
- * Renders the top 3 players onto the podium structure.
- */
+// --- Render podium ---
 function renderPodium(top3){
-  const rankTexts = ['1st 🥇', '2nd 🥈', '3rd 🥉'];
-  // The HTML is ordered 2nd, 1st, 3rd, so we map the data accordingly
+  const rankTexts=['1st 🥇','2nd 🥈','3rd 🥉'];
   const pods=[podium.querySelector('.pod.second'),podium.querySelector('.pod.first'),podium.querySelector('.pod.third')];
-  const dataMap=[top3[1],top3[0],top3[2]]; 
-  const textMap = [rankTexts[1], rankTexts[0], rankTexts[2]];
-  
+  const dataMap=[top3[1],top3[0],top3[2]];
+  const textMap=[rankTexts[1],rankTexts[0],rankTexts[2]];
   for(let i=0;i<3;i++){
-    const pod=pods[i],data=dataMap[i]; 
+    const pod=pods[i],data=dataMap[i];
     if(!pod) continue;
-    const placeEl=pod.querySelector('.place');
+    pod.querySelector('.place').innerHTML=textMap[i]||`${i+1}th`;
     const nameEl=pod.querySelector('.name'), pointsEl=pod.querySelector('.points');
-    
-    // Set the rank text and emoji
-    placeEl.innerHTML = textMap[i] || `${i+1}th`; 
-    
-    if(data){ 
-      let displayName = data.name || '—'; 
-      nameEl.textContent=displayName; 
-      nameEl.classList.remove('muted'); 
-      pointsEl.textContent=(data.points!=null?data.points:'0')+' pts'; 
-    }
-    else{ 
-      nameEl.textContent='—'; 
-      nameEl.classList.add('muted'); 
-      pointsEl.textContent='0 pts'; 
-    }
+    if(data){ nameEl.textContent=data.name; nameEl.classList.remove('muted'); pointsEl.textContent=data.points+' pts'; }
+    else{ nameEl.textContent='—'; nameEl.classList.add('muted'); pointsEl.textContent='0 pts'; }
   }
 }
 
-/**
- * Main function to fetch, process, sort, and render the data.
- */
-function processAndRender(allRows){
-  if(!allRows||allRows.length<1) return;
-  const originalHeaders=allRows[0].map(h=>h||''); 
-  const rawRows=allRows.slice(1).filter(r=>r.some(c=>c.trim()!==""));
-  
-  const ptsIdx=detectPointsColumn(originalHeaders,rawRows);
-  
-  let nameIdx = -1;
-  const normalizedHeaders = originalHeaders.map(h => (h || "").toLowerCase().replace(/[^a-z0-9]/g, ''));
-  const nameCandidates = ['name', 'player', 'team', 'id'];
-
-  for (let c of nameCandidates) {
-    const idx = normalizedHeaders.indexOf(c);
-    if (idx !== -1) {
-      nameIdx = idx;
-      break;
-    }
-  }
-  
-  if (nameIdx === -1 || nameIdx === ptsIdx) {
-    nameIdx = originalHeaders.findIndex((_, i) => i !== ptsIdx);
-    if (nameIdx === -1) nameIdx = 0; 
-  }
-
-  if (nameIdx === ptsIdx && originalHeaders.length > 1) {
-      nameIdx = 0; 
-  }
-  
-  const rowObjs=rawRows.map(row=>{
-    const ptsRaw=(row[ptsIdx]||'').toString().replace(/[^0-9.\-]/g,'').trim();
-    const points=ptsRaw===''||isNaN(Number(ptsRaw))?0:Number(ptsRaw);
-    const name=(row[nameIdx]||'').toString(); 
-    const key=playerKeyFromRow(originalHeaders,row, nameIdx, ptsIdx);
-    return { key, name, points, rowData:row };
-  });
-  
-  // MANDATORY SORTING: Descending by Points, Ascending by Name (tiebreaker)
-  rowObjs.sort((a,b)=>{ 
-    if(b.points!==a.points) return b.points-a.points; 
-    return a.name.localeCompare(b.name); 
-  });
-  
-  // Calculate Ranks (handles ties)
-  let rank=0, lastPoints=null;
-  rowObjs.forEach((r,idx)=>{ 
-    if(lastPoints===null||r.points!==lastPoints){ 
-      rank=idx+1; 
-      lastPoints=r.points; 
-    } 
-    r.rank=rank; 
-  });
-  
-  buildHeader(originalHeaders, ptsIdx);
-  const newOrderedRows=rowObjs.map(r=>({ key:r.key,rowData:r.rowData,rank:r.rank }));
-  animateReorderAndRender(newOrderedRows, nameIdx, ptsIdx, originalHeaders);
-  renderPodium(rowObjs.slice(0,3).map(r=>({ name:r.name, points:r.points })));
-  
-  // Save current state for next comparison
-  previousRowsMap.clear(); 
-  rowObjs.forEach(r=>previousRowsMap.set(r.key,r.rowData.slice())); 
-  previousOrder=rowObjs.map(r=>r.key);
-}
-
-/**
- * Initiates the leaderboard update process.
- */
+// --- Main update ---
 async function updateLeaderboard(){
   try{
     const csv=await fetchSheetCSV();
-    if(!csv||csv.length<=1){ tableHead.innerHTML="<tr><th>No data found or only header row</th></tr>"; tableBody.innerHTML=""; renderPodium([]); return; }
-    processAndRender(csv);
-  }catch(err){ console.error("🛑 Failed to update leaderboard:",err); }
+    if(!csv||csv.length<=1) return;
+    const headers=csv[0], rows=csv.slice(1).filter(r=>r.some(c=>c.trim()!==""));
+    const ptsIdx=detectPointsColumn(headers, rows);
+    
+    const rowObjs=rows.map(row=>{
+      const ptsRaw=(row[ptsIdx]||'').replace(/[^0-9.\-]/g,'');
+      const points=ptsRaw===''||isNaN(Number(ptsRaw))?0:Number(ptsRaw);
+      const name=row[0]||'—';
+      return {key:name,name,points,rowData:row};
+    });
+
+    rowObjs.sort((a,b)=>b.points-a.points || a.name.localeCompare(b.name));
+    let rank=0,lastPoints=null;
+    rowObjs.forEach((r,idx)=>{
+      if(lastPoints===null||r.points!==lastPoints) rank=idx+1;
+      r.rank=rank; lastPoints=r.points;
+      const prev=previousData.find(p=>p.key===r.key);
+      if(prev){
+        if(prev.rank!==r.rank) r.rankChange=true;
+        else if(prev.points!==r.points) r.scoreChange=true;
+      } else r.rankChange=true;
+    });
+
+    renderTable(rowObjs, headers, ptsIdx);
+    renderPodium(rowObjs.slice(0,3));
+    previousData=rowObjs.map(r=>({...r}));
+  } catch(err){ console.error(err); }
 }
 
-// Initial load and set interval for continuous updates
+// Initial load + periodic check every 10s (optional)
 updateLeaderboard();
-setInterval(updateLeaderboard,POLL_MS);
+setInterval(updateLeaderboard,10000);
 </script>
 </body>
 </html>
